@@ -9,6 +9,42 @@ cache_dir = "./.cache"
 # path = "contracts/counter.clar"
 # epoch = "latest"
 
+[contracts.governance]
+path = "contracts/governance.clar"
+epoch = "latest"
+
+[contracts.vault-registry]
+path = "contracts/vault-registry.clar"
+epoch = "latest"
+
+[contracts.vault-core]
+path = "contracts/vault-core.clar"
+epoch = "latest"
+
+[contracts.strategy-manager]
+path = "contracts/strategy-manager.clar"
+epoch = "latest"
+
+[contracts.strategy-lending]
+path = "contracts/strategy-lending.clar"
+epoch = "latest"
+
+[contracts.strategy-liquidity]
+path = "contracts/strategy-liquidity.clar"
+epoch = "latest"
+
+[contracts.strategy-income]
+path = "contracts/strategy-income.clar"
+epoch = "latest"
+
+[contracts.fee-manager]
+path = "contracts/fee-manager.clar"
+epoch = "latest"
+
+[contracts.oracle-nav]
+path = "contracts/oracle-nav.clar"
+epoch = "latest"
+
 [repl.analysis]
 passes = ["check_checker"]
 check_checker = { trusted_sender = false, trusted_caller = false, callee_filter = false }
