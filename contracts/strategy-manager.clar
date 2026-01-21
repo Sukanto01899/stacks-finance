@@ -1,8 +1,11 @@
 (define-constant ERR-UNAUTHORIZED u100)
 (define-constant ERR-NOT-FOUND u101)
 (define-constant ERR-INSUFFICIENT u102)
+(define-constant ERR-ALREADY-INITIALIZED u103)
+(define-constant ERR-NOT-INITIALIZED u104)
 
 (define-data-var vault-core principal tx-sender)
+(define-data-var initialized bool false)
 
 (define-map strategies
   { strategy: principal }
@@ -14,17 +17,22 @@
 )
 
 (define-read-only (is-vault-core)
-  (is-eq tx-sender (var-get vault-core))
+  (or
+    (is-eq tx-sender (var-get vault-core))
+    (is-eq contract-caller (var-get vault-core))
+  )
 )
 
 (define-read-only (get-strategy (strategy principal))
   (map-get? strategies { strategy: strategy })
 )
 
-(define-public (set-vault-core (new-vault-core principal))
+(define-public (initialize (new-vault-core principal))
   (begin
     (asserts! (is-governor) (err ERR-UNAUTHORIZED))
+    (asserts! (not (var-get initialized)) (err ERR-ALREADY-INITIALIZED))
     (var-set vault-core new-vault-core)
+    (var-set initialized true)
     (ok true)
   )
 )
@@ -64,6 +72,7 @@
 (define-public (record-deposit (strategy principal) (amount uint))
   (let ((entry (map-get? strategies { strategy: strategy })))
     (begin
+      (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
       (asserts! (is-vault-core) (err ERR-UNAUTHORIZED))
       (asserts! (is-some entry) (err ERR-NOT-FOUND))
       (map-set strategies { strategy: strategy }
@@ -77,6 +86,7 @@
 (define-public (record-withdraw (strategy principal) (amount uint))
   (let ((entry (map-get? strategies { strategy: strategy })))
     (begin
+      (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
       (asserts! (is-vault-core) (err ERR-UNAUTHORIZED))
       (asserts! (is-some entry) (err ERR-NOT-FOUND))
       (asserts! (>= (get managed (unwrap-panic entry)) amount) (err ERR-INSUFFICIENT))

@@ -5,15 +5,6 @@
 (define-data-var treasury principal tx-sender)
 (define-data-var strategist principal tx-sender)
 
-;; Define events for fee management
-(define-events
-  ;; Emitted when fees are updated
-  (event (fees-updated (performance-bps uint) (management-bps uint) (updated-by principal)))
-  
-  ;; Emitted when fee recipients are changed
-  (event (recipients-updated (treasury principal) (strategist principal) (updated-by principal)))
-)
-
 (define-read-only (is-governor)
   (contract-call? .governance is-governor tx-sender)
 )
@@ -34,7 +25,6 @@
     (asserts! (is-governor) (err ERR-UNAUTHORIZED))
     (var-set performance-fee-bps performance-bps)
     (var-set management-fee-bps management-bps)
-    (emit-event (fees-updated performance-bps management-bps tx-sender))
     (ok true)
   )
 )
@@ -44,7 +34,6 @@
     (asserts! (is-governor) (err ERR-UNAUTHORIZED))
     (var-set treasury new-treasury)
     (var-set strategist new-strategist)
-    (emit-event (recipients-updated new-treasury new-strategist tx-sender))
     (ok true)
   )
 )

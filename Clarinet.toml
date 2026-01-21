@@ -45,6 +45,10 @@ epoch = "latest"
 path = "contracts/oracle-nav.clar"
 epoch = "latest"
 
+[contracts.mock-token]
+path = "contracts/mock-token.clar"
+epoch = "latest"
+
 [repl.analysis]
 passes = ["check_checker"]
 check_checker = { trusted_sender = false, trusted_caller = false, callee_filter = false }
