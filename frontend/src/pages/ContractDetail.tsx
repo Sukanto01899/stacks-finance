@@ -1,78 +1,174 @@
+import { useMemo, useState } from "react";
+import { openContractCall } from "@stacks/connect";
+import { PostConditionMode } from "@stacks/transactions";
 import { Link, useParams } from "react-router-dom";
+import { contractMap } from "../config/contracts";
+import type { ContractAction } from "../config/contracts";
+import { toClarityValue } from "../lib/clarity";
+import { networkLabel, stacksNetwork } from "../lib/stacks";
 
-const contractMeta: Record<
-  string,
-  { title: string; summary: string; calls: string[] }
-> = {
-  "vault-core": {
-    title: "Vault Core",
-    summary: "Handle deposits, withdrawals, and share accounting logic.",
-    calls: ["deposit", "withdraw", "allocate", "harvest"],
-  },
-  "strategy-manager": {
-    title: "Strategy Manager",
-    summary: "Register strategies, weights, and track managed balances.",
-    calls: ["add-strategy", "set-strategy-active", "record-deposit"],
-  },
-  "fee-manager": {
-    title: "Fee Manager",
-    summary: "Update performance and management fees.",
-    calls: ["set-fees", "set-recipients"],
-  },
-  governance: {
-    title: "Governance",
-    summary: "Control pause states and governor permissions.",
-    calls: ["set-governor", "pause", "unpause"],
-  },
-};
+type ActionState = Record<string, Record<string, string>>;
+type ActionStatus = Record<string, string | null>;
 
 function ContractDetailPage() {
   const { contractId } = useParams();
-  const info = contractId ? contractMeta[contractId] : undefined;
+  const contract = contractId ? contractMap[contractId] : undefined;
+  const [formState, setFormState] = useState<ActionState>({});
+  const [actionStatus, setActionStatus] = useState<ActionStatus>({});
+  const [submitting, setSubmitting] = useState<Record<string, boolean>>({});
+
+  const appDetails = useMemo(
+    () => ({
+      name: "Stacks Finance",
+      icon: "https://stacks.co/favicon.ico",
+    }),
+    [],
+  );
+
+  const updateField = (actionId: string, key: string, value: string) => {
+    setFormState((prev) => ({
+      ...prev,
+      [actionId]: {
+        ...prev[actionId],
+        [key]: value,
+      },
+    }));
+  };
+
+  const handleSubmit = (action: ContractAction) => {
+    if (!contract) {
+      return;
+    }
+    if (!contract.address) {
+      setActionStatus((prev) => ({
+        ...prev,
+        [action.id]: "Set the contract address in config before sending.",
+      }));
+      return;
+    }
+    setSubmitting((prev) => ({ ...prev, [action.id]: true }));
+    setActionStatus((prev) => ({ ...prev, [action.id]: null }));
+    try {
+      const values = formState[action.id] ?? {};
+      const functionArgs = action.params.map((param) =>
+        toClarityValue(param.type, values[param.key] ?? ""),
+      );
+      openContractCall({
+        appDetails,
+        contractAddress: contract.address,
+        contractName: contract.name,
+        functionName: action.functionName,
+        functionArgs,
+        network: stacksNetwork,
+        postConditionMode: PostConditionMode.Allow,
+        onFinish: (data) => {
+          setSubmitting((prev) => ({ ...prev, [action.id]: false }));
+          setActionStatus((prev) => ({
+            ...prev,
+            [action.id]: data?.txId
+              ? `Submitted: ${data.txId}`
+              : "Transaction submitted.",
+          }));
+        },
+        onCancel: () => {
+          setSubmitting((prev) => ({ ...prev, [action.id]: false }));
+          setActionStatus((prev) => ({
+            ...prev,
+            [action.id]: "Transaction cancelled.",
+          }));
+        },
+      });
+    } catch (error: any) {
+      setSubmitting((prev) => ({ ...prev, [action.id]: false }));
+      setActionStatus((prev) => ({
+        ...prev,
+        [action.id]: error?.message ?? "Unable to prepare transaction.",
+      }));
+    }
+  };
+
+  if (!contract) {
+    return (
+      <section className="stack">
+        <div className="panel">
+          <h2>Contract not found</h2>
+          <p>The selected contract is not configured yet.</p>
+          <Link className="ghost-button" to="/contracts">
+            Back to contracts
+          </Link>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="stack">
       <div className="section-header">
         <div>
           <p className="eyebrow">Contract detail</p>
-          <h2>{info?.title ?? contractId ?? "Unknown contract"}</h2>
-          <p className="lede">
-            {info?.summary ??
-              "Wire in the contract ABI and outline the call flows here."}
-          </p>
+          <h2>{contract.label}</h2>
+          <p className="lede">{contract.description}</p>
         </div>
-        <Link className="ghost-button" to="/contracts">
-          Back to contracts
-        </Link>
+        <div className="meta-stack">
+          <div>
+            <p className="meta-label">Network</p>
+            <p className="meta-value">{networkLabel}</p>
+          </div>
+          <div>
+            <p className="meta-label">Address</p>
+            <p className="meta-value">
+              {contract.address ? contract.address : "Set in config"}
+            </p>
+          </div>
+          <Link className="ghost-button" to="/contracts">
+            Back to contracts
+          </Link>
+        </div>
       </div>
 
-      <div className="detail-grid">
-        <article className="panel">
-          <h3>Read-only calls</h3>
-          <ul className="pill-list">
-            <li>get-balance</li>
-            <li>get-total-supply</li>
-            <li>get-asset</li>
-          </ul>
-        </article>
-        <article className="panel">
-          <h3>Write calls</h3>
-          <ul className="pill-list">
-            {(info?.calls ?? ["deploy", "configure", "execute"]).map((call) => (
-              <li key={call}>{call}</li>
-            ))}
-          </ul>
-        </article>
-        <article className="panel">
-          <h3>Interaction planner</h3>
-          <p>
-            Add wallet connection, simulate calls with Clarinet, then dispatch
-            transactions with Stacks.js.
-          </p>
-          <button className="cta-button" type="button">
-            Launch simulator
-          </button>
-        </article>
+      <div className="action-grid">
+        {contract.actions.map((action) => {
+          const values = formState[action.id] ?? {};
+          const status = actionStatus[action.id];
+          return (
+            <article key={action.id} className="panel action-card">
+              <div className="action-header">
+                <div>
+                  <h3>{action.label}</h3>
+                  <p className="lede">{action.description}</p>
+                </div>
+                <span className="badge">{action.functionName}</span>
+              </div>
+              <div className="form-grid">
+                {action.params.map((param) => (
+                  <label key={param.key} className="form-field">
+                    <span>{param.label}</span>
+                    <input
+                      className="input"
+                      type="text"
+                      placeholder={param.placeholder}
+                      value={values[param.key] ?? ""}
+                      onChange={(event) =>
+                        updateField(action.id, param.key, event.target.value)
+                      }
+                    />
+                  </label>
+                ))}
+              </div>
+              <div className="action-footer">
+                <button
+                  className="cta-button"
+                  type="button"
+                  onClick={() => handleSubmit(action)}
+                  disabled={submitting[action.id]}
+                >
+                  {submitting[action.id] ? "Submitting..." : "Send transaction"}
+                </button>
+                {status ? <span className="status">{status}</span> : null}
+              </div>
+            </article>
+          );
+        })}
       </div>
     </section>
   );

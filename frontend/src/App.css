@@ -3,19 +3,20 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  padding: 2.5rem clamp(1.5rem, 3vw, 3.5rem) 3rem;
+  padding: 2rem clamp(1.5rem, 3vw, 3.5rem) 3rem;
 }
 
 .app-header {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  justify-content: space-between;
   gap: 2rem;
-  padding: 1.5rem 1.75rem;
+  padding: 1.25rem 1.75rem;
   border-radius: 24px;
   background: var(--panel);
   border: 1px solid var(--border);
   box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
 }
 
 .brand {
@@ -29,8 +30,8 @@
   place-items: center;
   width: 48px;
   height: 48px;
-  border-radius: 16px;
-  background: linear-gradient(135deg, var(--accent), #123f48);
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
   color: #fff;
   font-family: "Fraunces", "Times New Roman", serif;
   font-weight: 800;
@@ -40,7 +41,7 @@
 .brand-title {
   margin: 0;
   font-family: "Fraunces", "Times New Roman", serif;
-  font-size: 1.4rem;
+  font-size: 1.35rem;
   font-weight: 600;
 }
 
@@ -54,6 +55,7 @@
   display: flex;
   gap: 0.75rem;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .nav-link {
@@ -66,7 +68,7 @@
 }
 
 .nav-link.active {
-  color: var(--ink);
+  color: var(--accent-strong);
   border-color: var(--accent-soft);
   background: #fff;
 }
@@ -91,22 +93,50 @@
   border: 1px solid var(--border);
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.network-pill {
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(15, 118, 110, 0.12);
+  color: var(--accent-strong);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.wallet-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--border);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
 .stack {
   display: flex;
   flex-direction: column;
   gap: 2rem;
 }
 
-.hero {
+.dashboard-header {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
-  align-items: center;
+  align-items: stretch;
 }
 
-.hero-text h1 {
+.dashboard-header h1 {
   font-family: "Fraunces", "Times New Roman", serif;
-  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  font-size: clamp(2.2rem, 3.8vw, 3.2rem);
   margin: 0 0 1rem;
 }
 
@@ -124,38 +154,40 @@
   margin: 0;
 }
 
-.hero-actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1.5rem;
-  flex-wrap: wrap;
-}
-
-.hero-panel {
-  display: grid;
-  gap: 1rem;
-  padding: 1.5rem;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid var(--border);
+.balance-card {
+  border-radius: 22px;
+  padding: 1.75rem;
+  background: linear-gradient(135deg, rgba(15, 118, 110, 0.1), rgba(255, 255, 255, 0.9));
+  border: 1px solid var(--accent-soft);
   box-shadow: var(--shadow);
-}
-
-.stat {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
+  flex-direction: column;
+  gap: 0.8rem;
 }
 
-.stat-label {
+.balance-label {
+  margin: 0;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.18rem;
+  font-size: 0.7rem;
+}
+
+.balance-value {
+  margin: 0;
+  font-size: clamp(2rem, 3vw, 2.6rem);
+  font-weight: 700;
+}
+
+.balance-meta {
   margin: 0;
   color: var(--muted);
 }
 
-.stat-value {
-  margin: 0;
-  font-size: 1.6rem;
-  font-weight: 600;
+.balance-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
 .card-grid {
@@ -216,8 +248,8 @@
   display: inline-flex;
   padding: 0.2rem 0.6rem;
   border-radius: 999px;
-  background: rgba(15, 91, 92, 0.12);
-  color: var(--accent);
+  background: rgba(15, 118, 110, 0.12);
+  color: var(--accent-strong);
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.15rem;
@@ -227,6 +259,79 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 1.5rem;
+}
+
+.meta-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  align-items: flex-start;
+}
+
+.meta-label {
+  margin: 0;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18rem;
+  color: var(--muted);
+}
+
+.meta-value {
+  margin: 0;
+  font-weight: 600;
+  color: var(--ink);
+  max-width: 280px;
+  word-break: break-all;
+}
+
+.action-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.action-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.action-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.form-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.form-field {
+  display: grid;
+  gap: 0.4rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.input {
+  padding: 0.65rem 0.8rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  font-size: 0.95rem;
+}
+
+.action-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.status {
+  font-size: 0.85rem;
+  color: var(--muted);
 }
 
 .pill-list {
@@ -257,9 +362,9 @@
 }
 
 .cta-button {
-  background: linear-gradient(135deg, var(--sunset), #e5a467);
-  color: #3a1d0b;
-  box-shadow: 0 12px 30px rgba(214, 118, 59, 0.25);
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  color: #fff;
+  box-shadow: 0 12px 30px rgba(15, 118, 110, 0.25);
 }
 
 .ghost-button {
@@ -295,7 +400,74 @@
     align-items: flex-start;
   }
 
-  .hero-panel {
-    width: 100%;
+  .app-header {
+    grid-template-columns: 1fr;
   }
+
+  .table-row {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+}
+.metric-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.75rem;
+  color: var(--muted);
+}
+
+.metric-row strong {
+  color: var(--ink);
+}
+
+.progress {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(15, 118, 110, 0.15);
+  overflow: hidden;
+  margin-top: 0.6rem;
+}
+
+.progress span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+.progress.muted span {
+  background: #6cb8b3;
+}
+
+.progress.warm span {
+  background: var(--sunset);
+}
+
+.table {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 1.2fr 0.6fr 0.8fr 0.8fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.table-head {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12rem;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  padding-top: 0;
+}
+
+.positive {
+  color: var(--accent-strong);
+  font-weight: 600;
 }
