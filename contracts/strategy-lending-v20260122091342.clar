@@ -14,6 +14,29 @@
   )
 )
 
+(define-event ManagerSet
+  (old-manager principal)
+  (new-manager principal)
+)
+
+(define-event Deposited
+  (depositor principal)
+  (amount uint)
+)
+
+(define-event Withdrawn
+  (withdrawer principal)
+  (recipient principal)
+  (amount uint)
+)
+
+(define-event Sip010Withdrawn
+  (token-contract principal)
+  (withdrawer principal)
+  (recipient principal)
+  (amount uint)
+)
+
 (define-data-var manager principal tx-sender)
 (define-data-var initialized bool false)
 (define-data-var managed uint u0)
@@ -32,9 +55,11 @@
 (define-public (set-manager (new-manager principal))
   (begin
     (asserts! (is-manager) (err ERR-UNAUTHORIZED))
+(let ((old-manager (var-get manager)))
     (asserts! (not (var-get initialized)) (err ERR-ALREADY-INITIALIZED))
     (var-set manager new-manager)
     (var-set initialized true)
+     (emit-event ManagerSet old-manager new-manager)
     (ok true)
   )
 )
@@ -44,6 +69,7 @@
     (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
     (asserts! (is-manager) (err ERR-UNAUTHORIZED))
     (var-set managed (+ (var-get managed) amount))
+     (emit-event Deposited tx-sender amount)
     (ok true)
   )
 )
@@ -69,6 +95,7 @@
       (asserts! (>= (var-get managed) amount) (err ERR-INSUFFICIENT))
       (try! (as-contract (contract-call? token transfer amount tx-sender recipient none)))
       (var-set managed (- (var-get managed) amount))
+     (emit-event Withdrawn tx-sender recipient amount)  
       (ok true)
     )
   )
