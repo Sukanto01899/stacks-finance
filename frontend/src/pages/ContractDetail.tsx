@@ -1,11 +1,12 @@
 import { useMemo, useState } from "react";
 import { openContractCall } from "@stacks/connect";
-import { PostConditionMode } from "@stacks/transactions";
+import { PostConditionMode, postConditionToWire } from "@stacks/transactions";
 import { Link, useParams } from "react-router-dom";
 import { contractMap } from "../config/contracts";
 import type { ContractAction } from "../config/contracts";
 import { toClarityValue } from "../lib/clarity";
-import { networkLabel, stacksNetwork } from "../lib/stacks";
+import { networkLabel, STACKS_NETWORK, stacksNetwork } from "../lib/stacks";
+import { getUserAddress } from "../lib/wallet";
 
 type ActionState = Record<string, Record<string, string>>;
 type ActionStatus = Record<string, string | null>;
@@ -53,6 +54,33 @@ function ContractDetailPage() {
       const functionArgs = action.params.map((param) =>
         toClarityValue(param.type, values[param.key] ?? ""),
       );
+      const postConditions = (action.postConditions ?? []).map((preset) => {
+        const rawAmount = values[preset.amountParam];
+        if (!rawAmount) {
+          throw new Error(
+            `Enter a value for ${preset.amountParam} to build post-conditions.`,
+          );
+        }
+        if (!/^\d+$/.test(rawAmount)) {
+          throw new Error("Post-condition amounts must be uint values.");
+        }
+        const address =
+          preset.principal === "origin"
+            ? "origin"
+            : `${contract.address}.${contract.name}`;
+        return postConditionToWire({
+          type: "stx-postcondition",
+          address,
+          condition: preset.direction === "sent" ? "lte" : "gte",
+          amount: rawAmount,
+        });
+      });
+      if (action.postConditions?.length) {
+        const originAddress = getUserAddress(STACKS_NETWORK);
+        if (!originAddress) {
+          throw new Error("Connect a wallet before sending this transaction.");
+        }
+      }
       openContractCall({
         appDetails,
         contractAddress: contract.address,
@@ -60,7 +88,8 @@ function ContractDetailPage() {
         functionName: action.functionName,
         functionArgs,
         network: stacksNetwork,
-        postConditionMode: PostConditionMode.Allow,
+        postConditionMode: PostConditionMode.Deny,
+        postConditions,
         onFinish: (data) => {
           setSubmitting((prev) => ({ ...prev, [action.id]: false }));
           setActionStatus((prev) => ({
