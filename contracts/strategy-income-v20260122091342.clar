@@ -18,57 +18,133 @@
 (define-data-var initialized bool false)
 (define-data-var managed uint u0)
 
-(define-read-only (is-manager)
-  (or
-    (is-eq tx-sender (var-get manager))
-    (is-eq contract-caller (var-get manager))
-  )
+;; Add these events
+(define-event ManagerUpdated
+  (old-manager principal)
+  (new-manager principal)
+  (updated-by principal)
 )
 
-(define-read-only (get-managed)
-  (var-get managed)
+(define-event Initialized
+  (manager principal)
+  (initialized-by principal)
+)
+
+(define-event Deposited
+  (depositor principal)
+  (amount uint)
+  (new-managed-amount uint)
+)
+
+(define-event Withdrawn
+  (withdrawer principal)
+  (recipient principal)
+  (amount uint)
+  (new-managed-amount uint)
+)
+
+(define-event TokenWithdrawn
+  (withdrawer principal)
+  (recipient principal)
+  (token principal)
+  (amount uint)
+  (new-managed-amount uint)
+)
+
+(define-event Harvested
+  (harvester principal)
+  (harvested-amount uint)
+  (new-managed-amount uint)
 )
 
 (define-public (set-manager (new-manager principal))
-  (begin
-    (asserts! (is-manager) (err ERR-UNAUTHORIZED))
-    (asserts! (not (var-get initialized)) (err ERR-ALREADY-INITIALIZED))
-    (var-set manager new-manager)
-    (var-set initialized true)
-    (ok true)
+  (let
+    (
+      (old-manager (var-get manager))
+    )
+    (begin
+      (asserts! (is-manager) (err ERR-UNAUTHORIZED))
+      (asserts! (not (var-get initialized)) (err ERR-ALREADY-INITIALIZED))
+      (var-set manager new-manager)
+      (var-set initialized true)
+      (emit-event Initialized
+        new-manager
+        tx-sender
+      )
+      (emit-event ManagerUpdated
+        old-manager
+        new-manager
+        tx-sender
+      )
+      (ok true)
+    )
   )
 )
 
 (define-public (deposit (amount uint))
-  (begin
-    (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
-    (asserts! (is-manager) (err ERR-UNAUTHORIZED))
-    (var-set managed (+ (var-get managed) amount))
-    (ok true)
+  (let
+    (
+      (old-managed (var-get managed))
+      (new-managed (+ old-managed amount))
+    )
+    (begin
+      (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
+      (asserts! (is-manager) (err ERR-UNAUTHORIZED))
+      (var-set managed new-managed)
+      (emit-event Deposited
+        tx-sender
+        amount
+        new-managed
+      )
+      (ok true)
+    )
   )
 )
 
 (define-public (withdraw (amount uint))
-  (let ((recipient tx-sender))
+  (let 
+    (
+      (recipient tx-sender)
+      (old-managed (var-get managed))
+      (new-managed (- old-managed amount))
+    )
     (begin
       (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
       (asserts! (is-manager) (err ERR-UNAUTHORIZED))
-      (asserts! (>= (var-get managed) amount) (err ERR-INSUFFICIENT))
+      (asserts! (>= old-managed amount) (err ERR-INSUFFICIENT))
       (try! (as-contract (stx-transfer? amount tx-sender recipient)))
-      (var-set managed (- (var-get managed) amount))
+      (var-set managed new-managed)
+      (emit-event Withdrawn
+        tx-sender
+        recipient
+        amount
+        new-managed
+      )
       (ok true)
     )
   )
 )
 
 (define-public (withdraw-sip010 (token <sip010-trait>) (amount uint))
-  (let ((recipient tx-sender))
+  (let 
+    (
+      (recipient tx-sender)
+      (old-managed (var-get managed))
+      (new-managed (- old-managed amount))
+    )
     (begin
       (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
       (asserts! (is-manager) (err ERR-UNAUTHORIZED))
-      (asserts! (>= (var-get managed) amount) (err ERR-INSUFFICIENT))
+      (asserts! (>= old-managed amount) (err ERR-INSUFFICIENT))
       (try! (as-contract (contract-call? token transfer amount tx-sender recipient none)))
-      (var-set managed (- (var-get managed) amount))
+      (var-set managed new-managed)
+      (emit-event TokenWithdrawn
+        tx-sender
+        recipient
+        (contract-of token)
+        amount
+        new-managed
+      )
       (ok true)
     )
   )
@@ -78,6 +154,8 @@
   (begin
     (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
     (asserts! (is-manager) (err ERR-UNAUTHORIZED))
+    ;; Note: Your harvest function returns (ok u0) but doesn't actually harvest
+    ;; If it does harvest in the future, you'll need to emit Harvested event
     (ok u0)
   )
 )
