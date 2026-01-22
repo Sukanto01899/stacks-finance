@@ -43,8 +43,8 @@ export const CONTRACTS: ContractConfig[] = [
   {
     id: "vault-core",
     label: "Vault Core",
-    address: "ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13",
-    name: "vault-core-v20260122091342",
+    address: "SP1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXRCD0S3K",
+    name: "vault-core-v2601221844",
     type: "vault",
     description:
       "Supply, withdraw, and route assets into registered strategies.",
@@ -350,8 +350,8 @@ export const CONTRACTS: ContractConfig[] = [
   {
     id: "strategy-manager",
     label: "Strategy Manager",
-    address: "ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13",
-    name: "strategy-manager-v20260122091342",
+    address: "SP1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXRCD0S3K",
+    name: "strategy-manager-v2601221844",
     type: "manager",
     description: "Manage strategy weights and activity.",
     actions: [
@@ -480,8 +480,8 @@ export const CONTRACTS: ContractConfig[] = [
   {
     id: "strategy-income",
     label: "Strategy Income",
-    address: "ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13",
-    name: "strategy-income-v20260122091342",
+    address: "SP1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXRCD0S3K",
+    name: "strategy-income-v2601221844",
     type: "strategy",
     description: "Income strategy controls.",
     actions: [
@@ -567,8 +567,8 @@ export const CONTRACTS: ContractConfig[] = [
   {
     id: "strategy-lending",
     label: "Strategy Lending",
-    address: "ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13",
-    name: "strategy-lending-v20260122091342",
+    address: "SP1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXRCD0S3K",
+    name: "strategy-lending-v2601221844",
     type: "strategy",
     description: "Lending strategy controls.",
     actions: [
@@ -654,8 +654,8 @@ export const CONTRACTS: ContractConfig[] = [
   {
     id: "strategy-liquidity",
     label: "Strategy Liquidity",
-    address: "ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13",
-    name: "strategy-liquidity-v20260122091342",
+    address: "SP1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXRCD0S3K",
+    name: "strategy-liquidity-v2601221844",
     type: "strategy",
     description: "Liquidity strategy controls.",
     actions: [
@@ -741,8 +741,8 @@ export const CONTRACTS: ContractConfig[] = [
   {
     id: "fee-manager",
     label: "Fee Manager",
-    address: "ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13",
-    name: "fee-manager-v2-v20260122091342",
+    address: "SP1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXRCD0S3K",
+    name: "fee-manager-v2-v2601221844",
     type: "fees",
     description: "Update fee settings and recipients.",
     actions: [
@@ -791,8 +791,8 @@ export const CONTRACTS: ContractConfig[] = [
   {
     id: "governance",
     label: "Governance",
-    address: "ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13",
-    name: "governance-v2-v20260122091342",
+    address: "SP1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXRCD0S3K",
+    name: "governance-v2-v2601221844",
     type: "governance",
     description: "Governor permissions and pause control.",
     actions: [
@@ -829,8 +829,8 @@ export const CONTRACTS: ContractConfig[] = [
   {
     id: "vault-registry",
     label: "Vault Registry",
-    address: "ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13",
-    name: "vault-registry-v20260122091342",
+    address: "SP1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXRCD0S3K",
+    name: "vault-registry-v2601221844",
     type: "registry",
     description: "Register vaults and manage caps.",
     actions: [
@@ -905,8 +905,8 @@ export const CONTRACTS: ContractConfig[] = [
   {
     id: "oracle-nav",
     label: "Oracle NAV",
-    address: "ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13",
-    name: "oracle-nav-v20260122091342",
+    address: "SP1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXRCD0S3K",
+    name: "oracle-nav-v2601221844",
     type: "oracle",
     description: "Report NAV values for vaults.",
     actions: [
@@ -935,8 +935,8 @@ export const CONTRACTS: ContractConfig[] = [
   {
     id: "mock-token",
     label: "Mock Token",
-    address: "ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13",
-    name: "mock-token-v2-v20260122091342",
+    address: "SP1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXRCD0S3K",
+    name: "mock-token-v2-v2601221844",
     type: "token",
     description: "Test SIP-010 token operations.",
     actions: [

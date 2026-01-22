@@ -9,44 +9,44 @@ cache_dir = "./.cache"
 # path = "contracts/counter.clar"
 # epoch = "latest"
 
-[contracts.governance-v2-v20260122091342-v20260122183655]
-path = "contracts/governance-v2-v20260122091342-v20260122183655.clar"
+[contracts.governance-v2-v2601221844]
+path = "contracts/governance-v2-v2601221844.clar"
 epoch = "3.2"
 
-[contracts.vault-registry-v20260122091342-v20260122183655]
-path = "contracts/vault-registry-v20260122091342-v20260122183655.clar"
+[contracts.vault-registry-v2601221844]
+path = "contracts/vault-registry-v2601221844.clar"
 epoch = "3.2"
 
-[contracts.vault-core-v20260122091342-v20260122183655]
-path = "contracts/vault-core-v20260122091342-v20260122183655.clar"
+[contracts.vault-core-v2601221844]
+path = "contracts/vault-core-v2601221844.clar"
 epoch = "3.2"
 
-[contracts.strategy-manager-v20260122091342-v20260122183655]
-path = "contracts/strategy-manager-v20260122091342-v20260122183655.clar"
+[contracts.strategy-manager-v2601221844]
+path = "contracts/strategy-manager-v2601221844.clar"
 epoch = "3.2"
 
-[contracts.strategy-lending-v20260122091342-v20260122183655]
-path = "contracts/strategy-lending-v20260122091342-v20260122183655.clar"
+[contracts.strategy-lending-v2601221844]
+path = "contracts/strategy-lending-v2601221844.clar"
 epoch = "3.2"
 
-[contracts.strategy-liquidity-v20260122091342-v20260122183655]
-path = "contracts/strategy-liquidity-v20260122091342-v20260122183655.clar"
+[contracts.strategy-liquidity-v2601221844]
+path = "contracts/strategy-liquidity-v2601221844.clar"
 epoch = "3.2"
 
-[contracts.strategy-income-v20260122091342-v20260122183655]
-path = "contracts/strategy-income-v20260122091342-v20260122183655.clar"
+[contracts.strategy-income-v2601221844]
+path = "contracts/strategy-income-v2601221844.clar"
 epoch = "3.2"
 
-[contracts.fee-manager-v2-v20260122091342-v20260122183655]
-path = "contracts/fee-manager-v2-v20260122091342-v20260122183655.clar"
+[contracts.fee-manager-v2-v2601221844]
+path = "contracts/fee-manager-v2-v2601221844.clar"
 epoch = "3.2"
 
-[contracts.oracle-nav-v20260122091342-v20260122183655]
-path = "contracts/oracle-nav-v20260122091342-v20260122183655.clar"
+[contracts.oracle-nav-v2601221844]
+path = "contracts/oracle-nav-v2601221844.clar"
 epoch = "3.2"
 
-[contracts.mock-token-v2-v20260122091342-v20260122183655]
-path = "contracts/mock-token-v2-v20260122091342-v20260122183655.clar"
+[contracts.mock-token-v2-v2601221844]
+path = "contracts/mock-token-v2-v2601221844.clar"
 epoch = "3.2"
 
 [repl.analysis]
@@ -60,5 +60,6 @@ check_checker = { trusted_sender = false, trusted_caller = false, callee_filter 
 # warning, if it gets checked inside. This check will also propagate up to the
 # caller.
 # More informations: https://www.hiro.so/blog/new-safety-checks-in-clarinet
+
 
 
