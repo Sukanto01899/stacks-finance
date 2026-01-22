@@ -58,6 +58,97 @@
   )
 ))
 
+;; Vault initialization and configuration events
+(define-event VaultInitialized
+  (kind uint)
+  (token (optional principal))
+  (name (string-ascii 32))
+  (symbol (string-ascii 32))
+  (decimals uint)
+  (initialized-by principal)
+)
+
+(define-event RegistryUpdated
+  (old-registry principal)
+  (new-registry principal)
+  (updated-by principal)
+)
+
+(define-event FeeManagerUpdated
+  (old-fee-manager principal)
+  (new-fee-manager principal)
+  (updated-by principal)
+)
+
+;; Token transfer event (SIP-010 compliance)
+(define-event Transfer
+  (sender principal)
+  (recipient principal)
+  (amount uint)
+  (memo (optional (buff 34)))
+)
+
+;; Deposit events
+(define-event Deposited
+  (depositor principal)
+  (amount uint)
+  (shares-minted uint)
+  (new-total-assets uint)
+  (new-total-shares uint)
+)
+
+(define-event Sip010Deposited
+  (depositor principal)
+  (token principal)
+  (amount uint)
+  (shares-minted uint)
+  (new-total-assets uint)
+  (new-total-shares uint)
+)
+
+;; Withdrawal events
+(define-event Withdrawn
+  (withdrawer principal)
+  (recipient principal)
+  (shares-burned uint)
+  (assets-received uint)
+  (new-total-assets uint)
+  (new-total-shares uint)
+)
+
+(define-event Sip010Withdrawn
+  (withdrawer principal)
+  (recipient principal)
+  (token principal)
+  (shares-burned uint)
+  (assets-received uint)
+  (new-total-assets uint)
+  (new-total-shares uint)
+)
+
+;; Strategy allocation events
+(define-event Allocated
+  (strategy principal)
+  (amount uint)
+  (new-total-assets uint)
+  (allocated-by principal)
+)
+
+(define-event Deallocated
+  (strategy principal)
+  (amount uint)
+  (new-total-assets uint)
+  (deallocated-by principal)
+)
+
+(define-event Harvested
+  (strategy principal)
+  (profit uint)
+  (new-total-assets uint)
+  (harvested-by principal)
+)
+
+
 (define-data-var token-name (string-ascii 32) "Vault Receipt")
 (define-data-var token-symbol (string-ascii 32) "vTOKEN")
 (define-data-var token-decimals uint u6)
@@ -133,6 +224,7 @@
     (var-set token-symbol symbol)
     (var-set token-decimals decimals)
     (var-set initialized true)
+     (emit-event VaultInitialized kind token name symbol decimals tx-sender)
     (ok true)
   )
 )
@@ -141,6 +233,7 @@
   (begin
     (asserts! (is-governor) (err ERR-UNAUTHORIZED))
     (var-set registry new-registry)
+     (emit-event RegistryUpdated old-registry new-registry tx-sender)
     (ok true)
   )
 )
@@ -149,6 +242,7 @@
   (begin
     (asserts! (is-governor) (err ERR-UNAUTHORIZED))
     (var-set fee-manager new-fee-manager)
+     (emit-event FeeManagerUpdated old-fee-manager new-fee-manager tx-sender) 
     (ok true)
   )
 )
@@ -161,7 +255,8 @@
     (begin
       (var-set total-shares (+ (var-get total-shares) amount))
       (map-set balances { user: recipient } { shares: (+ (get shares entry) amount) })
-      true
+      (emit-event Transfer tx-sender recipient amount none) 
+      (ok true)
     )
   )
 )
@@ -175,6 +270,7 @@
       (asserts! (>= (get shares entry) amount) (err ERR-INSUFFICIENT))
       (var-set total-shares (- (var-get total-shares) amount))
       (map-set balances { user: owner } { shares: (- (get shares entry) amount) })
+        (emit-event Transfer owner tx-sender amount none)
       (ok true)
     )
   )
@@ -198,21 +294,31 @@
         amount
       ) }
       )
+       (emit-event Transfer sender recipient amount memo)
       (ok true)
     )
   )
 )
 
 (define-public (deposit (amount uint))
-  (begin
-    (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
-    (asserts! (not (is-paused)) (err ERR-PAUSED))
-    (asserts! (is-eq (var-get asset-kind) u0) (err ERR-INVALID-ASSET))
-    (asserts! (> amount u0) (err ERR-INVALID-ASSET))
-    (try! (stx-transfer? amount tx-sender (as-contract tx-sender)))
-    (var-set total-assets (+ (var-get total-assets) amount))
-    (mint-shares tx-sender amount)
-    (ok amount)
+  (let
+    (
+      (old-total-assets (var-get total-assets))
+      (old-total-shares (var-get total-shares))
+      (new-total-assets (+ old-total-assets amount))
+      (new-total-shares (+ old-total-shares amount))
+    )
+    (begin
+      (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
+      (asserts! (not (is-paused)) (err ERR-PAUSED))
+      (asserts! (is-eq (var-get asset-kind) u0) (err ERR-INVALID-ASSET))
+      (asserts! (> amount u0) (err ERR-INVALID-ASSET))
+      (try! (stx-transfer? amount tx-sender (as-contract tx-sender)))
+      (var-set total-assets new-total-assets)
+      (mint-shares tx-sender amount)
+      (emit-event Deposited tx-sender amount amount new-total-assets new-total-shares)
+      (ok amount)
+    )
   )
 )
 
@@ -220,33 +326,51 @@
     (token <sip010-trait>)
     (amount uint)
   )
-  (begin
-    (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
-    (asserts! (not (is-paused)) (err ERR-PAUSED))
-    (asserts! (is-eq (var-get asset-kind) u1) (err ERR-INVALID-ASSET))
-    (asserts!
-      (is-eq (contract-of token)
-        (unwrap! (var-get asset-token) (err ERR-INVALID-ASSET))
-      )
-      (err ERR-INVALID-ASSET)
+  (let
+    (
+      (token-addr (contract-of token))
+      (old-total-assets (var-get total-assets))
+      (old-total-shares (var-get total-shares))
+      (new-total-assets (+ old-total-assets amount))
+      (new-total-shares (+ old-total-shares amount))
     )
-    (asserts! (> amount u0) (err ERR-INVALID-ASSET))
-    (try! (contract-call? token transfer amount tx-sender (as-contract tx-sender) none))
-    (var-set total-assets (+ (var-get total-assets) amount))
-    (mint-shares tx-sender amount)
-    (ok amount)
+    (begin
+      (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
+      (asserts! (not (is-paused)) (err ERR-PAUSED))
+      (asserts! (is-eq (var-get asset-kind) u1) (err ERR-INVALID-ASSET))
+      (asserts!
+        (is-eq token-addr
+          (unwrap! (var-get asset-token) (err ERR-INVALID-ASSET))
+        )
+        (err ERR-INVALID-ASSET)
+      )
+      (asserts! (> amount u0) (err ERR-INVALID-ASSET))
+      (try! (contract-call? token transfer amount tx-sender (as-contract tx-sender) none))
+      (var-set total-assets new-total-assets)
+      (mint-shares tx-sender amount)
+      (emit-event Sip010Deposited tx-sender token-addr amount amount new-total-assets new-total-shares)
+      (ok amount)
+    )
   )
 )
 
 (define-public (withdraw (shares uint))
-  (let ((recipient tx-sender))
+  (let
+    (
+      (recipient tx-sender)
+      (old-total-assets (var-get total-assets))
+      (old-total-shares (var-get total-shares))
+      (new-total-assets (- old-total-assets shares))
+      (new-total-shares (- old-total-shares shares))
+    )
     (begin
       (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
       (asserts! (not (is-paused)) (err ERR-PAUSED))
       (asserts! (is-eq (var-get asset-kind) u0) (err ERR-INVALID-ASSET))
       (try! (burn-shares recipient shares))
       (try! (stx-transfer? shares (as-contract tx-sender) recipient))
-      (var-set total-assets (- (var-get total-assets) shares))
+      (var-set total-assets new-total-assets)
+      (emit-event Withdrawn tx-sender recipient shares shares new-total-assets new-total-shares)
       (ok shares)
     )
   )
@@ -256,22 +380,29 @@
     (token <sip010-trait>)
     (shares uint)
   )
-  (let ((recipient tx-sender))
+  (let
+    (
+      (recipient tx-sender)
+      (token-addr (contract-of token))
+      (old-total-assets (var-get total-assets))
+      (old-total-shares (var-get total-shares))
+      (new-total-assets (- old-total-assets shares))
+      (new-total-shares (- old-total-shares shares))
+    )
     (begin
       (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
       (asserts! (not (is-paused)) (err ERR-PAUSED))
       (asserts! (is-eq (var-get asset-kind) u1) (err ERR-INVALID-ASSET))
       (asserts!
-        (is-eq (contract-of token)
+        (is-eq token-addr
           (unwrap! (var-get asset-token) (err ERR-INVALID-ASSET))
         )
         (err ERR-INVALID-ASSET)
       )
       (try! (burn-shares recipient shares))
-      (try! (contract-call? token transfer shares (as-contract tx-sender) recipient
-        none
-      ))
-      (var-set total-assets (- (var-get total-assets) shares))
+      (try! (contract-call? token transfer shares (as-contract tx-sender) recipient none))
+      (var-set total-assets new-total-assets)
+      (emit-event Sip010Withdrawn tx-sender recipient token-addr shares shares new-total-assets new-total-shares)
       (ok shares)
     )
   )
@@ -281,19 +412,27 @@
     (strategy <strategy-trait>)
     (amount uint)
   )
-  (begin
-    (asserts! (is-governor) (err ERR-UNAUTHORIZED))
-    (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
-    (asserts! (not (is-paused)) (err ERR-PAUSED))
-    (asserts! (is-eq (var-get asset-kind) u0) (err ERR-INVALID-ASSET))
-    (asserts! (<= amount (var-get total-assets)) (err ERR-INSUFFICIENT))
-    (try! (as-contract (stx-transfer? amount tx-sender (contract-of strategy))))
-    (try! (contract-call? .strategy-manager record-deposit (contract-of strategy)
-      amount
-    ))
-    (try! (contract-call? strategy deposit amount))
-    (var-set total-assets (- (var-get total-assets) amount))
-    (ok true)
+  (let
+    (
+      (strategy-addr (contract-of strategy))
+      (old-total-assets (var-get total-assets))
+      (new-total-assets (- old-total-assets amount))
+    )
+    (begin
+      (asserts! (is-governor) (err ERR-UNAUTHORIZED))
+      (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
+      (asserts! (not (is-paused)) (err ERR-PAUSED))
+      (asserts! (is-eq (var-get asset-kind) u0) (err ERR-INVALID-ASSET))
+      (asserts! (<= amount old-total-assets) (err ERR-INSUFFICIENT))
+      (try! (as-contract (stx-transfer? amount tx-sender strategy-addr)))
+      (try! (contract-call? .strategy-manager record-deposit strategy-addr
+        amount
+      ))
+      (try! (contract-call? strategy deposit amount))
+      (var-set total-assets new-total-assets)
+      (emit-event Allocated strategy-addr amount new-total-assets tx-sender)
+      (ok true)
+    )
   )
 )
 
@@ -301,17 +440,25 @@
     (strategy <strategy-trait>)
     (amount uint)
   )
-  (begin
-    (asserts! (is-governor) (err ERR-UNAUTHORIZED))
-    (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
-    (asserts! (not (is-paused)) (err ERR-PAUSED))
-    (asserts! (is-eq (var-get asset-kind) u0) (err ERR-INVALID-ASSET))
-    (try! (contract-call? strategy withdraw amount))
-    (try! (contract-call? .strategy-manager record-withdraw (contract-of strategy)
-      amount
-    ))
-    (var-set total-assets (+ (var-get total-assets) amount))
-    (ok true)
+  (let
+    (
+      (strategy-addr (contract-of strategy))
+      (old-total-assets (var-get total-assets))
+      (new-total-assets (+ old-total-assets amount))
+    )
+    (begin
+      (asserts! (is-governor) (err ERR-UNAUTHORIZED))
+      (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
+      (asserts! (not (is-paused)) (err ERR-PAUSED))
+      (asserts! (is-eq (var-get asset-kind) u0) (err ERR-INVALID-ASSET))
+      (try! (contract-call? strategy withdraw amount))
+      (try! (contract-call? .strategy-manager record-withdraw strategy-addr
+        amount
+      ))
+      (var-set total-assets new-total-assets)
+      (emit-event Deallocated strategy-addr amount new-total-assets tx-sender)
+      (ok true)
+    )
   )
 )
 
@@ -320,25 +467,34 @@
     (strategy <strategy-trait>)
     (amount uint)
   )
-  (begin
-    (asserts! (is-governor) (err ERR-UNAUTHORIZED))
-    (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
-    (asserts! (not (is-paused)) (err ERR-PAUSED))
-    (asserts! (is-eq (var-get asset-kind) u1) (err ERR-INVALID-ASSET))
-    (asserts!
-      (is-eq (contract-of token)
-        (unwrap! (var-get asset-token) (err ERR-INVALID-ASSET))
-      )
-      (err ERR-INVALID-ASSET)
+  (let
+    (
+      (token-addr (contract-of token))
+      (strategy-addr (contract-of strategy))
+      (old-total-assets (var-get total-assets))
+      (new-total-assets (- old-total-assets amount))
     )
-    (asserts! (<= amount (var-get total-assets)) (err ERR-INSUFFICIENT))
-    (try! (as-contract (contract-call? token transfer amount tx-sender (contract-of strategy) none)))
-    (try! (contract-call? .strategy-manager record-deposit (contract-of strategy)
-      amount
-    ))
-    (try! (contract-call? strategy deposit amount))
-    (var-set total-assets (- (var-get total-assets) amount))
-    (ok true)
+    (begin
+      (asserts! (is-governor) (err ERR-UNAUTHORIZED))
+      (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
+      (asserts! (not (is-paused)) (err ERR-PAUSED))
+      (asserts! (is-eq (var-get asset-kind) u1) (err ERR-INVALID-ASSET))
+      (asserts!
+        (is-eq token-addr
+          (unwrap! (var-get asset-token) (err ERR-INVALID-ASSET))
+        )
+        (err ERR-INVALID-ASSET)
+      )
+      (asserts! (<= amount old-total-assets) (err ERR-INSUFFICIENT))
+      (try! (as-contract (contract-call? token transfer amount tx-sender strategy-addr none)))
+      (try! (contract-call? .strategy-manager record-deposit strategy-addr
+        amount
+      ))
+      (try! (contract-call? strategy deposit amount))
+      (var-set total-assets new-total-assets)
+      (emit-event Allocated strategy-addr amount new-total-assets tx-sender)
+      (ok true)
+    )
   )
 )
 
@@ -347,34 +503,50 @@
     (strategy <strategy-trait>)
     (amount uint)
   )
-  (begin
-    (asserts! (is-governor) (err ERR-UNAUTHORIZED))
-    (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
-    (asserts! (not (is-paused)) (err ERR-PAUSED))
-    (asserts! (is-eq (var-get asset-kind) u1) (err ERR-INVALID-ASSET))
-    (asserts!
-      (is-eq (contract-of token)
-        (unwrap! (var-get asset-token) (err ERR-INVALID-ASSET))
-      )
-      (err ERR-INVALID-ASSET)
+  (let
+    (
+      (token-addr (contract-of token))
+      (strategy-addr (contract-of strategy))
+      (old-total-assets (var-get total-assets))
+      (new-total-assets (+ old-total-assets amount))
     )
-    (try! (contract-call? strategy withdraw-sip010 token amount))
-    (try! (contract-call? .strategy-manager record-withdraw (contract-of strategy)
-      amount
-    ))
-    (var-set total-assets (+ (var-get total-assets) amount))
-    (ok true)
+    (begin
+      (asserts! (is-governor) (err ERR-UNAUTHORIZED))
+      (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
+      (asserts! (not (is-paused)) (err ERR-PAUSED))
+      (asserts! (is-eq (var-get asset-kind) u1) (err ERR-INVALID-ASSET))
+      (asserts!
+        (is-eq token-addr
+          (unwrap! (var-get asset-token) (err ERR-INVALID-ASSET))
+        )
+        (err ERR-INVALID-ASSET)
+      )
+      (try! (contract-call? strategy withdraw-sip010 token amount))
+      (try! (contract-call? .strategy-manager record-withdraw strategy-addr
+        amount
+      ))
+      (var-set total-assets new-total-assets)
+      (emit-event Deallocated strategy-addr amount new-total-assets tx-sender)
+      (ok true)
+    )
   )
 )
 
 (define-public (harvest (strategy <strategy-trait>))
-  (begin
-    (asserts! (is-governor) (err ERR-UNAUTHORIZED))
-    (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
-    (asserts! (not (is-paused)) (err ERR-PAUSED))
-    (let ((profit (try! (contract-call? strategy harvest))))
-      (var-set total-assets (+ (var-get total-assets) profit))
-      (ok profit)
+  (let
+    (
+      (strategy-addr (contract-of strategy))
+      (old-total-assets (var-get total-assets))
+    )
+    (begin
+      (asserts! (is-governor) (err ERR-UNAUTHORIZED))
+      (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
+      (asserts! (not (is-paused)) (err ERR-PAUSED))
+      (let ((profit (try! (contract-call? strategy harvest))))
+        (var-set total-assets (+ old-total-assets profit))
+        (emit-event Harvested strategy-addr profit (+ old-total-assets profit) tx-sender)
+        (ok profit)
+      )
     )
   )
 )
