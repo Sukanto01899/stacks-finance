@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { openContractCall } from "@stacks/connect";
-import { PostConditionMode, postConditionToWire } from "@stacks/transactions";
+import { PostConditionMode, type PostCondition } from "@stacks/transactions";
 import { Link, useParams } from "react-router-dom";
 import { contractMap } from "../config/contracts";
 import type { ContractAction } from "../config/contracts";
@@ -54,7 +54,8 @@ function ContractDetailPage() {
       const functionArgs = action.params.map((param) =>
         toClarityValue(param.type, values[param.key] ?? ""),
       );
-      const postConditions = (action.postConditions ?? []).map((preset) => {
+      const postConditions: PostCondition[] = (action.postConditions ?? []).map(
+        (preset) => {
         const rawAmount = values[preset.amountParam];
         if (!rawAmount) {
           throw new Error(
@@ -68,13 +69,14 @@ function ContractDetailPage() {
           preset.principal === "origin"
             ? "origin"
             : `${contract.address}.${contract.name}`;
-        return postConditionToWire({
+        return {
           type: "stx-postcondition",
           address,
           condition: preset.direction === "sent" ? "lte" : "gte",
           amount: rawAmount,
-        });
-      });
+        } as PostCondition;
+      },
+      );
       if (action.postConditions?.length) {
         const originAddress = getUserAddress(STACKS_NETWORK);
         if (!originAddress) {

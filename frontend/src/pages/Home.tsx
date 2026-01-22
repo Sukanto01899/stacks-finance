@@ -75,6 +75,85 @@ function HomePage() {
         </article>
       </div>
 
+      <section className="panel quick-actions">
+        <div className="section-header">
+          <div>
+            <h2>Quick actions</h2>
+            <p className="lede">
+              Supply, borrow, and repay with a streamlined flow.
+            </p>
+          </div>
+          <Link className="ghost-button" to="/contracts">
+            Open full contract list
+          </Link>
+        </div>
+        <div className="quick-grid">
+          <div className="quick-card">
+            <div>
+              <p className="eyebrow">Supply</p>
+              <h3>Deposit into vault</h3>
+              <p className="lede">Earn yield by supplying assets.</p>
+            </div>
+            <label className="form-field">
+              <span>Asset</span>
+              <select className="input">
+                <option>STX</option>
+                <option>MOCK</option>
+              </select>
+            </label>
+            <label className="form-field">
+              <span>Amount</span>
+              <input className="input" type="text" placeholder="1000000" />
+            </label>
+            <Link className="cta-button" to="/contracts/vault-core">
+              Supply now
+            </Link>
+          </div>
+          <div className="quick-card">
+            <div>
+              <p className="eyebrow">Borrow</p>
+              <h3>Borrow against collateral</h3>
+              <p className="lede">Unlock liquidity from supplied assets.</p>
+            </div>
+            <label className="form-field">
+              <span>Asset</span>
+              <select className="input">
+                <option>STX</option>
+                <option>MOCK</option>
+              </select>
+            </label>
+            <label className="form-field">
+              <span>Amount</span>
+              <input className="input" type="text" placeholder="500000" />
+            </label>
+            <Link className="ghost-button" to="/contracts/strategy-lending">
+              Configure borrow
+            </Link>
+          </div>
+          <div className="quick-card">
+            <div>
+              <p className="eyebrow">Repay</p>
+              <h3>Repay borrowed funds</h3>
+              <p className="lede">Reduce debt and restore health factor.</p>
+            </div>
+            <label className="form-field">
+              <span>Asset</span>
+              <select className="input">
+                <option>STX</option>
+                <option>MOCK</option>
+              </select>
+            </label>
+            <label className="form-field">
+              <span>Amount</span>
+              <input className="input" type="text" placeholder="250000" />
+            </label>
+            <Link className="ghost-button" to="/contracts/strategy-manager">
+              Configure repay
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <section className="panel">
         <div className="section-header">
           <div>

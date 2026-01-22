@@ -4,6 +4,7 @@
 (define-constant ERR-ALREADY-INITIALIZED u103)
 (define-constant ERR-NOT-INITIALIZED u104)
 
+(define-data-var governor principal tx-sender)
 (define-data-var vault-core principal tx-sender)
 (define-data-var initialized bool false)
 
@@ -13,7 +14,15 @@
 )
 
 (define-read-only (is-governor)
-  (contract-call? .governance is-governor tx-sender)
+  (is-eq tx-sender (var-get governor))
+)
+
+(define-public (set-governor (new-governor principal))
+  (begin
+    (asserts! (is-governor) (err ERR-UNAUTHORIZED))
+    (var-set governor new-governor)
+    (ok true)
+  )
 )
 
 (define-read-only (is-vault-core)

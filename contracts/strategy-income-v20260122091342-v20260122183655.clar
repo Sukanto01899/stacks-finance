@@ -14,6 +14,7 @@
   )
 )
 
+(define-data-var governor principal tx-sender)
 (define-data-var manager principal tx-sender)
 (define-data-var initialized bool false)
 (define-data-var managed uint u0)
@@ -25,16 +26,31 @@
   )
 )
 
+(define-read-only (is-governor)
+  (is-eq tx-sender (var-get governor))
+)
+
 (define-read-only (get-managed)
   (var-get managed)
 )
 
 (define-public (set-manager (new-manager principal))
   (begin
-    (asserts! (is-manager) (err ERR-UNAUTHORIZED))
-    (asserts! (not (var-get initialized)) (err ERR-ALREADY-INITIALIZED))
+    (asserts! (or (is-manager) (is-governor)) (err ERR-UNAUTHORIZED))
+    (if (var-get initialized)
+      (asserts! (is-governor) (err ERR-UNAUTHORIZED))
+      true
+    )
     (var-set manager new-manager)
     (var-set initialized true)
+    (ok true)
+  )
+)
+
+(define-public (set-governor (new-governor principal))
+  (begin
+    (asserts! (is-governor) (err ERR-UNAUTHORIZED))
+    (var-set governor new-governor)
     (ok true)
   )
 )

@@ -1,12 +1,21 @@
 (define-constant ERR-UNAUTHORIZED u100)
 
+(define-data-var governor principal tx-sender)
 (define-data-var performance-fee-bps uint u1000)
 (define-data-var management-fee-bps uint u50)
 (define-data-var treasury principal tx-sender)
 (define-data-var strategist principal tx-sender)
 
 (define-read-only (is-governor)
-  (contract-call? .governance is-governor tx-sender)
+  (is-eq tx-sender (var-get governor))
+)
+
+(define-public (set-governor (new-governor principal))
+  (begin
+    (asserts! (is-governor) (err ERR-UNAUTHORIZED))
+    (var-set governor new-governor)
+    (ok true)
+  )
 )
 
 (define-read-only (get-fees)

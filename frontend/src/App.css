@@ -471,3 +471,39 @@
   color: var(--accent-strong);
   font-weight: 600;
 }
+
+.quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.quick-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+}
+
+.quick-card {
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.92);
+  padding: 1.25rem;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.quick-card .cta-button,
+.quick-card .ghost-button {
+  justify-self: flex-start;
+}
+
+.quick-card select.input {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+    linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position: calc(100% - 18px) calc(1em + 2px),
+    calc(100% - 12px) calc(1em + 2px);
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+}

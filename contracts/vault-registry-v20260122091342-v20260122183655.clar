@@ -1,6 +1,7 @@
 (define-constant ERR-UNAUTHORIZED u100)
 (define-constant ERR-NOT-FOUND u101)
 
+(define-data-var governor principal tx-sender)
 (define-data-var next-vault-id uint u1)
 
 (define-map vaults
@@ -9,7 +10,15 @@
 )
 
 (define-read-only (is-governor)
-  (contract-call? .governance is-governor tx-sender)
+  (is-eq tx-sender (var-get governor))
+)
+
+(define-public (set-governor (new-governor principal))
+  (begin
+    (asserts! (is-governor) (err ERR-UNAUTHORIZED))
+    (var-set governor new-governor)
+    (ok true)
+  )
 )
 
 (define-read-only (get-vault (id uint))
