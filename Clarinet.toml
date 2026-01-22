@@ -11,43 +11,43 @@ cache_dir = "./.cache"
 
 [contracts.governance]
 path = "contracts/governance.clar"
-epoch = "latest"
+epoch = "3.2"
 
 [contracts.vault-registry]
 path = "contracts/vault-registry.clar"
-epoch = "latest"
+epoch = "3.2"
 
 [contracts.vault-core]
 path = "contracts/vault-core.clar"
-epoch = "latest"
+epoch = "3.2"
 
 [contracts.strategy-manager]
 path = "contracts/strategy-manager.clar"
-epoch = "latest"
+epoch = "3.2"
 
 [contracts.strategy-lending]
 path = "contracts/strategy-lending.clar"
-epoch = "latest"
+epoch = "3.2"
 
 [contracts.strategy-liquidity]
 path = "contracts/strategy-liquidity.clar"
-epoch = "latest"
+epoch = "3.2"
 
 [contracts.strategy-income]
 path = "contracts/strategy-income.clar"
-epoch = "latest"
+epoch = "3.2"
 
 [contracts.fee-manager]
 path = "contracts/fee-manager.clar"
-epoch = "latest"
+epoch = "3.2"
 
 [contracts.oracle-nav]
 path = "contracts/oracle-nav.clar"
-epoch = "latest"
+epoch = "3.2"
 
 [contracts.mock-token]
 path = "contracts/mock-token.clar"
-epoch = "latest"
+epoch = "3.2"
 
 [repl.analysis]
 passes = ["check_checker"]

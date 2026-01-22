@@ -12,25 +12,51 @@
 (define-data-var asset-kind uint u0)
 (define-data-var asset-token (optional principal) none)
 
-(define-trait sip010-trait
-  (
-    (transfer (uint principal principal (optional (buff 34))) (response bool uint))
-    (get-name () (response (string-ascii 32) uint))
-    (get-symbol () (response (string-ascii 32) uint))
-    (get-decimals () (response uint uint))
-    (get-balance (principal) (response uint uint))
-    (get-total-supply () (response uint uint))
+(define-trait sip010-trait (
+  (transfer
+    (uint principal principal (optional (buff 34)))
+    (response bool uint)
   )
-)
+  (get-name
+    ()
+    (response (string-ascii 32) uint)
+  )
+  (get-symbol
+    ()
+    (response (string-ascii 32) uint)
+  )
+  (get-decimals
+    ()
+    (response uint uint)
+  )
+  (get-balance
+    (principal)
+    (response uint uint)
+  )
+  (get-total-supply
+    ()
+    (response uint uint)
+  )
+))
 
-(define-trait strategy-trait
-  (
-    (deposit (uint) (response bool uint))
-    (withdraw (uint) (response bool uint))
-    (withdraw-sip010 (<sip010-trait> uint) (response bool uint))
-    (harvest () (response uint uint))
+(define-trait strategy-trait (
+  (deposit
+    (uint)
+    (response bool uint)
   )
-)
+  (withdraw
+    (uint)
+    (response bool uint)
+  )
+  (withdraw-sip010
+    (<sip010-trait> uint)
+    (response bool uint)
+  )
+  (harvest
+    ()
+    (response uint uint)
+  )
+))
 
 (define-data-var token-name (string-ascii 32) "Vault Receipt")
 (define-data-var token-symbol (string-ascii 32) "vTOKEN")
@@ -53,7 +79,10 @@
 )
 
 (define-read-only (get-totals)
-  { total-shares: (var-get total-shares), total-assets: (var-get total-assets) }
+  {
+    total-shares: (var-get total-shares),
+    total-assets: (var-get total-assets),
+  }
 )
 
 (define-read-only (get-name)
@@ -73,14 +102,23 @@
 )
 
 (define-read-only (get-asset)
-  { kind: (var-get asset-kind), token: (var-get asset-token) }
+  {
+    kind: (var-get asset-kind),
+    token: (var-get asset-token),
+  }
 )
 
 (define-read-only (is-paused)
   (contract-call? .governance is-paused)
 )
 
-(define-public (initialize (kind uint) (token (optional principal)) (name (string-ascii 32)) (symbol (string-ascii 32)) (decimals uint))
+(define-public (initialize
+    (kind uint)
+    (token (optional principal))
+    (name (string-ascii 32))
+    (symbol (string-ascii 32))
+    (decimals uint)
+  )
   (begin
     (asserts! (is-governor) (err ERR-UNAUTHORIZED))
     (asserts! (not (var-get initialized)) (err ERR-ALREADY-INITIALIZED))
@@ -115,7 +153,10 @@
   )
 )
 
-(define-private (mint-shares (recipient principal) (amount uint))
+(define-private (mint-shares
+    (recipient principal)
+    (amount uint)
+  )
   (let ((entry (default-to { shares: u0 } (map-get? balances { user: recipient }))))
     (begin
       (var-set total-shares (+ (var-get total-shares) amount))
@@ -125,7 +166,10 @@
   )
 )
 
-(define-private (burn-shares (owner principal) (amount uint))
+(define-private (burn-shares
+    (owner principal)
+    (amount uint)
+  )
   (let ((entry (default-to { shares: u0 } (map-get? balances { user: owner }))))
     (begin
       (asserts! (>= (get shares entry) amount) (err ERR-INSUFFICIENT))
@@ -136,14 +180,23 @@
   )
 )
 
-(define-public (transfer (amount uint) (sender principal) (recipient principal) (memo (optional (buff 34))))
+(define-public (transfer
+    (amount uint)
+    (sender principal)
+    (recipient principal)
+    (memo (optional (buff 34)))
+  )
   (let ((entry (default-to { shares: u0 } (map-get? balances { user: sender }))))
     (begin
       (asserts! (is-eq tx-sender sender) (err ERR-UNAUTHORIZED))
       (asserts! (>= (get shares entry) amount) (err ERR-INSUFFICIENT))
       (map-set balances { user: sender } { shares: (- (get shares entry) amount) })
-      (map-set balances { user: recipient }
-        { shares: (+ (get shares (default-to { shares: u0 } (map-get? balances { user: recipient }))) amount) }
+      (map-set balances { user: recipient } { shares: (+
+        (get shares
+          (default-to { shares: u0 } (map-get? balances { user: recipient }))
+        )
+        amount
+      ) }
       )
       (ok true)
     )
@@ -163,12 +216,20 @@
   )
 )
 
-(define-public (deposit-sip010 (token <sip010-trait>) (amount uint))
+(define-public (deposit-sip010
+    (token <sip010-trait>)
+    (amount uint)
+  )
   (begin
     (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
     (asserts! (not (is-paused)) (err ERR-PAUSED))
     (asserts! (is-eq (var-get asset-kind) u1) (err ERR-INVALID-ASSET))
-    (asserts! (is-eq (contract-of token) (unwrap! (var-get asset-token) (err ERR-INVALID-ASSET))) (err ERR-INVALID-ASSET))
+    (asserts!
+      (is-eq (contract-of token)
+        (unwrap! (var-get asset-token) (err ERR-INVALID-ASSET))
+      )
+      (err ERR-INVALID-ASSET)
+    )
     (asserts! (> amount u0) (err ERR-INVALID-ASSET))
     (try! (contract-call? token transfer amount tx-sender (as-contract tx-sender) none))
     (var-set total-assets (+ (var-get total-assets) amount))
@@ -184,29 +245,42 @@
       (asserts! (not (is-paused)) (err ERR-PAUSED))
       (asserts! (is-eq (var-get asset-kind) u0) (err ERR-INVALID-ASSET))
       (try! (burn-shares recipient shares))
-      (try! (as-contract (stx-transfer? shares tx-sender recipient)))
+      (try! (stx-transfer? shares (as-contract tx-sender) recipient))
       (var-set total-assets (- (var-get total-assets) shares))
       (ok shares)
     )
   )
 )
 
-(define-public (withdraw-sip010 (token <sip010-trait>) (shares uint))
+(define-public (withdraw-sip010
+    (token <sip010-trait>)
+    (shares uint)
+  )
   (let ((recipient tx-sender))
     (begin
       (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
       (asserts! (not (is-paused)) (err ERR-PAUSED))
       (asserts! (is-eq (var-get asset-kind) u1) (err ERR-INVALID-ASSET))
-      (asserts! (is-eq (contract-of token) (unwrap! (var-get asset-token) (err ERR-INVALID-ASSET))) (err ERR-INVALID-ASSET))
+      (asserts!
+        (is-eq (contract-of token)
+          (unwrap! (var-get asset-token) (err ERR-INVALID-ASSET))
+        )
+        (err ERR-INVALID-ASSET)
+      )
       (try! (burn-shares recipient shares))
-      (try! (as-contract (contract-call? token transfer shares tx-sender recipient none)))
+      (try! (contract-call? token transfer shares (as-contract tx-sender) recipient
+        none
+      ))
       (var-set total-assets (- (var-get total-assets) shares))
       (ok shares)
     )
   )
 )
 
-(define-public (allocate (strategy <strategy-trait>) (amount uint))
+(define-public (allocate
+    (strategy <strategy-trait>)
+    (amount uint)
+  )
   (begin
     (asserts! (is-governor) (err ERR-UNAUTHORIZED))
     (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
@@ -214,51 +288,80 @@
     (asserts! (is-eq (var-get asset-kind) u0) (err ERR-INVALID-ASSET))
     (asserts! (<= amount (var-get total-assets)) (err ERR-INSUFFICIENT))
     (try! (as-contract (stx-transfer? amount tx-sender (contract-of strategy))))
-    (try! (contract-call? .strategy-manager record-deposit (contract-of strategy) amount))
+    (try! (contract-call? .strategy-manager record-deposit (contract-of strategy)
+      amount
+    ))
     (try! (contract-call? strategy deposit amount))
     (var-set total-assets (- (var-get total-assets) amount))
     (ok true)
   )
 )
 
-(define-public (deallocate (strategy <strategy-trait>) (amount uint))
+(define-public (deallocate
+    (strategy <strategy-trait>)
+    (amount uint)
+  )
   (begin
     (asserts! (is-governor) (err ERR-UNAUTHORIZED))
     (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
     (asserts! (not (is-paused)) (err ERR-PAUSED))
     (asserts! (is-eq (var-get asset-kind) u0) (err ERR-INVALID-ASSET))
     (try! (contract-call? strategy withdraw amount))
-    (try! (contract-call? .strategy-manager record-withdraw (contract-of strategy) amount))
+    (try! (contract-call? .strategy-manager record-withdraw (contract-of strategy)
+      amount
+    ))
     (var-set total-assets (+ (var-get total-assets) amount))
     (ok true)
   )
 )
 
-(define-public (allocate-sip010 (token <sip010-trait>) (strategy <strategy-trait>) (amount uint))
+(define-public (allocate-sip010
+    (token <sip010-trait>)
+    (strategy <strategy-trait>)
+    (amount uint)
+  )
   (begin
     (asserts! (is-governor) (err ERR-UNAUTHORIZED))
     (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
     (asserts! (not (is-paused)) (err ERR-PAUSED))
     (asserts! (is-eq (var-get asset-kind) u1) (err ERR-INVALID-ASSET))
-    (asserts! (is-eq (contract-of token) (unwrap! (var-get asset-token) (err ERR-INVALID-ASSET))) (err ERR-INVALID-ASSET))
+    (asserts!
+      (is-eq (contract-of token)
+        (unwrap! (var-get asset-token) (err ERR-INVALID-ASSET))
+      )
+      (err ERR-INVALID-ASSET)
+    )
     (asserts! (<= amount (var-get total-assets)) (err ERR-INSUFFICIENT))
     (try! (as-contract (contract-call? token transfer amount tx-sender (contract-of strategy) none)))
-    (try! (contract-call? .strategy-manager record-deposit (contract-of strategy) amount))
+    (try! (contract-call? .strategy-manager record-deposit (contract-of strategy)
+      amount
+    ))
     (try! (contract-call? strategy deposit amount))
     (var-set total-assets (- (var-get total-assets) amount))
     (ok true)
   )
 )
 
-(define-public (deallocate-sip010 (token <sip010-trait>) (strategy <strategy-trait>) (amount uint))
+(define-public (deallocate-sip010
+    (token <sip010-trait>)
+    (strategy <strategy-trait>)
+    (amount uint)
+  )
   (begin
     (asserts! (is-governor) (err ERR-UNAUTHORIZED))
     (asserts! (var-get initialized) (err ERR-NOT-INITIALIZED))
     (asserts! (not (is-paused)) (err ERR-PAUSED))
     (asserts! (is-eq (var-get asset-kind) u1) (err ERR-INVALID-ASSET))
-    (asserts! (is-eq (contract-of token) (unwrap! (var-get asset-token) (err ERR-INVALID-ASSET))) (err ERR-INVALID-ASSET))
+    (asserts!
+      (is-eq (contract-of token)
+        (unwrap! (var-get asset-token) (err ERR-INVALID-ASSET))
+      )
+      (err ERR-INVALID-ASSET)
+    )
     (try! (contract-call? strategy withdraw-sip010 token amount))
-    (try! (contract-call? .strategy-manager record-withdraw (contract-of strategy) amount))
+    (try! (contract-call? .strategy-manager record-withdraw (contract-of strategy)
+      amount
+    ))
     (var-set total-assets (+ (var-get total-assets) amount))
     (ok true)
   )
