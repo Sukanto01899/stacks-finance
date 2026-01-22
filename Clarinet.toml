@@ -9,44 +9,44 @@ cache_dir = "./.cache"
 # path = "contracts/counter.clar"
 # epoch = "latest"
 
-[contracts.governance]
-path = "contracts/governance.clar"
+[contracts.governance-v2-v20260122091342]
+path = "contracts/governance-v2-v20260122091342.clar"
 epoch = "3.2"
 
-[contracts.vault-registry]
-path = "contracts/vault-registry.clar"
+[contracts.vault-registry-v20260122091342]
+path = "contracts/vault-registry-v20260122091342.clar"
 epoch = "3.2"
 
-[contracts.vault-core]
-path = "contracts/vault-core.clar"
+[contracts.vault-core-v20260122091342]
+path = "contracts/vault-core-v20260122091342.clar"
 epoch = "3.2"
 
-[contracts.strategy-manager]
-path = "contracts/strategy-manager.clar"
+[contracts.strategy-manager-v20260122091342]
+path = "contracts/strategy-manager-v20260122091342.clar"
 epoch = "3.2"
 
-[contracts.strategy-lending]
-path = "contracts/strategy-lending.clar"
+[contracts.strategy-lending-v20260122091342]
+path = "contracts/strategy-lending-v20260122091342.clar"
 epoch = "3.2"
 
-[contracts.strategy-liquidity]
-path = "contracts/strategy-liquidity.clar"
+[contracts.strategy-liquidity-v20260122091342]
+path = "contracts/strategy-liquidity-v20260122091342.clar"
 epoch = "3.2"
 
-[contracts.strategy-income]
-path = "contracts/strategy-income.clar"
+[contracts.strategy-income-v20260122091342]
+path = "contracts/strategy-income-v20260122091342.clar"
 epoch = "3.2"
 
-[contracts.fee-manager]
-path = "contracts/fee-manager.clar"
+[contracts.fee-manager-v2-v20260122091342]
+path = "contracts/fee-manager-v2-v20260122091342.clar"
 epoch = "3.2"
 
-[contracts.oracle-nav]
-path = "contracts/oracle-nav.clar"
+[contracts.oracle-nav-v20260122091342]
+path = "contracts/oracle-nav-v20260122091342.clar"
 epoch = "3.2"
 
-[contracts.mock-token]
-path = "contracts/mock-token.clar"
+[contracts.mock-token-v2-v20260122091342]
+path = "contracts/mock-token-v2-v20260122091342.clar"
 epoch = "3.2"
 
 [repl.analysis]
@@ -60,3 +60,4 @@ check_checker = { trusted_sender = false, trusted_caller = false, callee_filter 
 # warning, if it gets checked inside. This check will also propagate up to the
 # caller.
 # More informations: https://www.hiro.so/blog/new-safety-checks-in-clarinet
+

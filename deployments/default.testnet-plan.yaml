@@ -1,0 +1,81 @@
+---
+id: 0
+name: Testnet deployment
+network: testnet
+stacks-node: "https://api.testnet.hiro.so"
+bitcoin-node: "http://blockstack:blockstacksystem@bitcoind.testnet.stacks.co:18332"
+plan:
+  batches:
+    - id: 0
+      transactions:
+        - contract-publish:
+            contract-name: fee-manager-v2-v20260122091342
+            expected-sender: ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13
+            cost: 11450
+            path: "contracts\\fee-manager-v2-v20260122091342.clar"
+            anchor-block-only: true
+            clarity-version: 3
+        - contract-publish:
+            contract-name: governance-v2-v20260122091342
+            expected-sender: ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13
+            cost: 6270
+            path: "contracts\\governance-v2-v20260122091342.clar"
+            anchor-block-only: true
+            clarity-version: 3
+        - contract-publish:
+            contract-name: mock-token-v2-v20260122091342
+            expected-sender: ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13
+            cost: 15960
+            path: "contracts\\mock-token-v2-v20260122091342.clar"
+            anchor-block-only: true
+            clarity-version: 3
+        - contract-publish:
+            contract-name: oracle-nav-v20260122091342
+            expected-sender: ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13
+            cost: 4900
+            path: "contracts\\oracle-nav-v20260122091342.clar"
+            anchor-block-only: true
+            clarity-version: 3
+        - contract-publish:
+            contract-name: strategy-income-v20260122091342
+            expected-sender: ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13
+            cost: 24140
+            path: "contracts\\strategy-income-v20260122091342.clar"
+            anchor-block-only: true
+            clarity-version: 3
+        - contract-publish:
+            contract-name: strategy-lending-v20260122091342
+            expected-sender: ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13
+            cost: 24140
+            path: "contracts\\strategy-lending-v20260122091342.clar"
+            anchor-block-only: true
+            clarity-version: 3
+        - contract-publish:
+            contract-name: strategy-liquidity-v20260122091342
+            expected-sender: ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13
+            cost: 24140
+            path: "contracts\\strategy-liquidity-v20260122091342.clar"
+            anchor-block-only: true
+            clarity-version: 3
+        - contract-publish:
+            contract-name: strategy-manager-v20260122091342
+            expected-sender: ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13
+            cost: 31720
+            path: "contracts\\strategy-manager-v20260122091342.clar"
+            anchor-block-only: true
+            clarity-version: 3
+        - contract-publish:
+            contract-name: vault-core-v20260122091342
+            expected-sender: ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13
+            cost: 104790
+            path: "contracts\\vault-core-v20260122091342.clar"
+            anchor-block-only: true
+            clarity-version: 3
+        - contract-publish:
+            contract-name: vault-registry-v20260122091342
+            expected-sender: ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13
+            cost: 13710
+            path: "contracts\\vault-registry-v20260122091342.clar"
+            anchor-block-only: true
+            clarity-version: 3
+      epoch: "3.2"

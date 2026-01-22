@@ -33,8 +33,8 @@ export const CONTRACTS: ContractConfig[] = [
   {
     id: "vault-core",
     label: "Vault Core",
-    address: "",
-    name: "vault-core",
+    address: "ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13",
+    name: "vault-core-v20260122091342",
     type: "vault",
     description:
       "Supply, withdraw, and route assets into registered strategies.",
@@ -152,8 +152,8 @@ export const CONTRACTS: ContractConfig[] = [
   {
     id: "strategy-manager",
     label: "Strategy Manager",
-    address: "",
-    name: "strategy-manager",
+    address: "ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13",
+    name: "strategy-manager-v20260122091342",
     type: "manager",
     description: "Manage strategy weights and activity.",
     actions: [
@@ -188,8 +188,8 @@ export const CONTRACTS: ContractConfig[] = [
   {
     id: "fee-manager",
     label: "Fee Manager",
-    address: "",
-    name: "fee-manager",
+    address: "ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13",
+    name: "fee-manager-v2-v20260122091342",
     type: "fees",
     description: "Update fee settings and recipients.",
     actions: [
