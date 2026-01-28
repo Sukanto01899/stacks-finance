@@ -9,73 +9,73 @@ plan:
     - id: 0
       transactions:
         - contract-publish:
-            contract-name: fee-manager-v2-v20260122091342
-            expected-sender: ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13
-            cost: 11450
-            path: "contracts\\fee-manager-v2-v20260122091342.clar"
+            contract-name: fee-manager-v2-v2601221844
+            expected-sender: ST1K2XGT5RNGT42N49BH936VDF8NXWNZJY0N432CM
+            cost: 13510
+            path: "contracts\\fee-manager-v2-v2601221844.clar"
             anchor-block-only: true
             clarity-version: 3
         - contract-publish:
-            contract-name: governance-v2-v20260122091342
-            expected-sender: ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13
+            contract-name: governance-v2-v2601221844
+            expected-sender: ST1K2XGT5RNGT42N49BH936VDF8NXWNZJY0N432CM
             cost: 6270
-            path: "contracts\\governance-v2-v20260122091342.clar"
+            path: "contracts\\governance-v2-v2601221844.clar"
             anchor-block-only: true
             clarity-version: 3
         - contract-publish:
-            contract-name: mock-token-v2-v20260122091342
-            expected-sender: ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13
+            contract-name: mock-token-v2-v2601221844
+            expected-sender: ST1K2XGT5RNGT42N49BH936VDF8NXWNZJY0N432CM
             cost: 15960
-            path: "contracts\\mock-token-v2-v20260122091342.clar"
+            path: "contracts\\mock-token-v2-v2601221844.clar"
             anchor-block-only: true
             clarity-version: 3
         - contract-publish:
-            contract-name: oracle-nav-v20260122091342
-            expected-sender: ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13
-            cost: 4900
-            path: "contracts\\oracle-nav-v20260122091342.clar"
+            contract-name: oracle-nav-v2601221844
+            expected-sender: ST1K2XGT5RNGT42N49BH936VDF8NXWNZJY0N432CM
+            cost: 6970
+            path: "contracts\\oracle-nav-v2601221844.clar"
             anchor-block-only: true
             clarity-version: 3
         - contract-publish:
-            contract-name: strategy-income-v20260122091342
-            expected-sender: ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13
-            cost: 24140
-            path: "contracts\\strategy-income-v20260122091342.clar"
+            contract-name: strategy-income-v2601221844
+            expected-sender: ST1K2XGT5RNGT42N49BH936VDF8NXWNZJY0N432CM
+            cost: 27550
+            path: "contracts\\strategy-income-v2601221844.clar"
             anchor-block-only: true
             clarity-version: 3
         - contract-publish:
-            contract-name: strategy-lending-v20260122091342
-            expected-sender: ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13
-            cost: 24140
-            path: "contracts\\strategy-lending-v20260122091342.clar"
+            contract-name: strategy-lending-v2601221844
+            expected-sender: ST1K2XGT5RNGT42N49BH936VDF8NXWNZJY0N432CM
+            cost: 27550
+            path: "contracts\\strategy-lending-v2601221844.clar"
             anchor-block-only: true
             clarity-version: 3
         - contract-publish:
-            contract-name: strategy-liquidity-v20260122091342
-            expected-sender: ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13
-            cost: 24140
-            path: "contracts\\strategy-liquidity-v20260122091342.clar"
+            contract-name: strategy-liquidity-v2601221844
+            expected-sender: ST1K2XGT5RNGT42N49BH936VDF8NXWNZJY0N432CM
+            cost: 27550
+            path: "contracts\\strategy-liquidity-v2601221844.clar"
             anchor-block-only: true
             clarity-version: 3
         - contract-publish:
-            contract-name: strategy-manager-v20260122091342
-            expected-sender: ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13
-            cost: 31720
-            path: "contracts\\strategy-manager-v20260122091342.clar"
+            contract-name: strategy-manager-v2601221844
+            expected-sender: ST1K2XGT5RNGT42N49BH936VDF8NXWNZJY0N432CM
+            cost: 33780
+            path: "contracts\\strategy-manager-v2601221844.clar"
             anchor-block-only: true
             clarity-version: 3
         - contract-publish:
-            contract-name: vault-core-v20260122091342
-            expected-sender: ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13
-            cost: 104790
-            path: "contracts\\vault-core-v20260122091342.clar"
+            contract-name: vault-core-v2601221844
+            expected-sender: ST1K2XGT5RNGT42N49BH936VDF8NXWNZJY0N432CM
+            cost: 111430
+            path: "contracts\\vault-core-v2601221844.clar"
             anchor-block-only: true
             clarity-version: 3
         - contract-publish:
-            contract-name: vault-registry-v20260122091342
-            expected-sender: ST1G4ZDXED8XM2XJ4Q4GJ7F4PG4EJQ1KKXVPSAX13
-            cost: 13710
-            path: "contracts\\vault-registry-v20260122091342.clar"
+            contract-name: vault-registry-v2601221844
+            expected-sender: ST1K2XGT5RNGT42N49BH936VDF8NXWNZJY0N432CM
+            cost: 15770
+            path: "contracts\\vault-registry-v2601221844.clar"
             anchor-block-only: true
             clarity-version: 3
       epoch: "3.2"

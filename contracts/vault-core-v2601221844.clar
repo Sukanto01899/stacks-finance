@@ -9,7 +9,6 @@
 (define-data-var governor principal tx-sender)
 (define-data-var registry principal tx-sender)
 (define-data-var fee-manager principal tx-sender)
-(define-data-var strategy-manager principal tx-sender)
 (define-data-var initialized bool false)
 (define-data-var asset-kind uint u0)
 (define-data-var asset-token (optional principal) none)
@@ -58,6 +57,17 @@
   (harvest
     ()
     (response uint uint)
+  )
+))
+
+(define-trait strategy-manager-trait (
+  (record-deposit
+    (principal uint)
+    (response bool uint)
+  )
+  (record-withdraw
+    (principal uint)
+    (response bool uint)
   )
 ))
 
@@ -168,14 +178,6 @@
   (begin
     (asserts! (is-governor) (err ERR-UNAUTHORIZED))
     (var-set fee-manager new-fee-manager)
-    (ok true)
-  )
-)
-
-(define-public (set-strategy-manager (new-strategy-manager principal))
-  (begin
-    (asserts! (is-governor) (err ERR-UNAUTHORIZED))
-    (var-set strategy-manager new-strategy-manager)
     (ok true)
   )
 )
@@ -305,6 +307,7 @@
 )
 
 (define-public (allocate
+    (manager <strategy-manager-trait>)
     (strategy <strategy-trait>)
     (amount uint)
   )
@@ -315,9 +318,7 @@
     (asserts! (is-eq (var-get asset-kind) u0) (err ERR-INVALID-ASSET))
     (asserts! (<= amount (var-get total-assets)) (err ERR-INSUFFICIENT))
     (try! (as-contract (stx-transfer? amount tx-sender (contract-of strategy))))
-    (try! (contract-call? (var-get strategy-manager) record-deposit (contract-of strategy)
-      amount
-    ))
+    (try! (contract-call? manager record-deposit (contract-of strategy) amount))
     (try! (contract-call? strategy deposit amount))
     (var-set total-assets (- (var-get total-assets) amount))
     (ok true)
@@ -325,6 +326,7 @@
 )
 
 (define-public (deallocate
+    (manager <strategy-manager-trait>)
     (strategy <strategy-trait>)
     (amount uint)
   )
@@ -334,9 +336,7 @@
     (asserts! (not (is-paused)) (err ERR-PAUSED))
     (asserts! (is-eq (var-get asset-kind) u0) (err ERR-INVALID-ASSET))
     (try! (contract-call? strategy withdraw amount))
-    (try! (contract-call? (var-get strategy-manager) record-withdraw (contract-of strategy)
-      amount
-    ))
+    (try! (contract-call? manager record-withdraw (contract-of strategy) amount))
     (var-set total-assets (+ (var-get total-assets) amount))
     (ok true)
   )
@@ -344,6 +344,7 @@
 
 (define-public (allocate-sip010
     (token <sip010-trait>)
+    (manager <strategy-manager-trait>)
     (strategy <strategy-trait>)
     (amount uint)
   )
@@ -360,9 +361,7 @@
     )
     (asserts! (<= amount (var-get total-assets)) (err ERR-INSUFFICIENT))
     (try! (as-contract (contract-call? token transfer amount tx-sender (contract-of strategy) none)))
-    (try! (contract-call? (var-get strategy-manager) record-deposit (contract-of strategy)
-      amount
-    ))
+    (try! (contract-call? manager record-deposit (contract-of strategy) amount))
     (try! (contract-call? strategy deposit amount))
     (var-set total-assets (- (var-get total-assets) amount))
     (ok true)
@@ -371,6 +370,7 @@
 
 (define-public (deallocate-sip010
     (token <sip010-trait>)
+    (manager <strategy-manager-trait>)
     (strategy <strategy-trait>)
     (amount uint)
   )
@@ -386,9 +386,7 @@
       (err ERR-INVALID-ASSET)
     )
     (try! (contract-call? strategy withdraw-sip010 token amount))
-    (try! (contract-call? (var-get strategy-manager) record-withdraw (contract-of strategy)
-      amount
-    ))
+    (try! (contract-call? manager record-withdraw (contract-of strategy) amount))
     (var-set total-assets (+ (var-get total-assets) amount))
     (ok true)
   )

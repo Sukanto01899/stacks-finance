@@ -238,6 +238,12 @@ export const CONTRACTS: ContractConfig[] = [
         functionName: "allocate",
         params: [
           {
+            key: "manager",
+            label: "Strategy manager principal",
+            type: "principal",
+            placeholder: "ST...strategy-manager",
+          },
+          {
             key: "strategy",
             label: "Strategy principal",
             type: "principal",
@@ -266,6 +272,12 @@ export const CONTRACTS: ContractConfig[] = [
         functionName: "deallocate",
         params: [
           {
+            key: "manager",
+            label: "Strategy manager principal",
+            type: "principal",
+            placeholder: "ST...strategy-manager",
+          },
+          {
             key: "strategy",
             label: "Strategy principal",
             type: "principal",
@@ -292,6 +304,12 @@ export const CONTRACTS: ContractConfig[] = [
             placeholder: "ST...mock-token",
           },
           {
+            key: "manager",
+            label: "Strategy manager principal",
+            type: "principal",
+            placeholder: "ST...strategy-manager",
+          },
+          {
             key: "strategy",
             label: "Strategy principal",
             type: "principal",
@@ -316,6 +334,12 @@ export const CONTRACTS: ContractConfig[] = [
             label: "Token principal",
             type: "principal",
             placeholder: "ST...mock-token",
+          },
+          {
+            key: "manager",
+            label: "Strategy manager principal",
+            type: "principal",
+            placeholder: "ST...strategy-manager",
           },
           {
             key: "strategy",
