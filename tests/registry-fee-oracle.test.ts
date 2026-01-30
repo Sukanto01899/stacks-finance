@@ -11,7 +11,7 @@ describe("vault registry", () => {
     const wallet1 = getAddress(accounts.get("wallet_1")!);
 
     const register = simnet.callPublicFn(
-      "vault-registry-v2601221844",
+      "vault-registry-v2601221844-v10",
       "register-vault",
       [Cl.principal(wallet1), Cl.uint(1), Cl.uint(1_000_000)],
       deployer
@@ -19,7 +19,7 @@ describe("vault registry", () => {
     expect(register.result).toBeOk(Cl.uint(1));
 
     const vault = simnet.callReadOnlyFn(
-      "vault-registry-v2601221844",
+      "vault-registry-v2601221844-v10",
       "get-vault",
       [Cl.uint(1)],
       deployer
@@ -34,7 +34,7 @@ describe("vault registry", () => {
     );
 
     const deactivate = simnet.callPublicFn(
-      "vault-registry-v2601221844",
+      "vault-registry-v2601221844-v10",
       "set-vault-active",
       [Cl.uint(1), Cl.bool(false)],
       deployer
@@ -42,7 +42,7 @@ describe("vault registry", () => {
     expect(deactivate.result).toBeOk(Cl.bool(true));
 
     const setCap = simnet.callPublicFn(
-      "vault-registry-v2601221844",
+      "vault-registry-v2601221844-v10",
       "set-vault-cap",
       [Cl.uint(1), Cl.uint(2_000_000)],
       deployer
@@ -55,7 +55,7 @@ describe("vault registry", () => {
     const wallet2 = getAddress(accounts.get("wallet_2")!);
 
     const register = simnet.callPublicFn(
-      "vault-registry-v2601221844",
+      "vault-registry-v2601221844-v10",
       "register-vault",
       [Cl.principal(wallet2), Cl.uint(2), Cl.uint(500)],
       wallet2
@@ -72,7 +72,7 @@ describe("fee manager", () => {
     const wallet2 = getAddress(accounts.get("wallet_2")!);
 
     const setFees = simnet.callPublicFn(
-      "fee-manager-v2-v2601221844",
+      "fee-manager-v2-v2601221844-v10",
       "set-fees",
       [Cl.uint(1200), Cl.uint(75)],
       deployer
@@ -80,14 +80,14 @@ describe("fee manager", () => {
     expect(setFees.result).toBeOk(Cl.bool(true));
 
     const setRecipients = simnet.callPublicFn(
-      "fee-manager-v2-v2601221844",
+      "fee-manager-v2-v2601221844-v10",
       "set-recipients",
       [Cl.principal(wallet1), Cl.principal(wallet2)],
       deployer
     );
     expect(setRecipients.result).toBeOk(Cl.bool(true));
 
-    const fees = simnet.callReadOnlyFn("fee-manager-v2-v2601221844", "get-fees", [], deployer);
+    const fees = simnet.callReadOnlyFn("fee-manager-v2-v2601221844-v10", "get-fees", [], deployer);
     expect(fees.result).toBeTuple({
       "performance-fee-bps": Cl.uint(1200),
       "management-fee-bps": Cl.uint(75),
@@ -101,7 +101,7 @@ describe("fee manager", () => {
     const wallet1 = getAddress(accounts.get("wallet_1")!);
 
     const setFees = simnet.callPublicFn(
-      "fee-manager-v2-v2601221844",
+      "fee-manager-v2-v2601221844-v10",
       "set-fees",
       [Cl.uint(500), Cl.uint(20)],
       wallet1
@@ -117,7 +117,7 @@ describe("oracle nav", () => {
     const wallet1 = getAddress(accounts.get("wallet_1")!);
 
     const setNav = simnet.callPublicFn(
-      "oracle-nav-v2601221844",
+      "oracle-nav-v2601221844-v10",
       "set-nav",
       [Cl.principal(wallet1), Cl.uint(42_000)],
       deployer
@@ -125,7 +125,7 @@ describe("oracle nav", () => {
     expect(setNav.result).toBeOk(Cl.bool(true));
 
     const nav = simnet.callReadOnlyFn(
-      "oracle-nav-v2601221844",
+      "oracle-nav-v2601221844-v10",
       "get-nav",
       [Cl.principal(wallet1)],
       deployer
@@ -143,7 +143,7 @@ describe("oracle nav", () => {
     const wallet1 = getAddress(accounts.get("wallet_1")!);
 
     const setNav = simnet.callPublicFn(
-      "oracle-nav-v2601221844",
+      "oracle-nav-v2601221844-v10",
       "set-nav",
       [Cl.principal(wallet1), Cl.uint(10)],
       wallet1

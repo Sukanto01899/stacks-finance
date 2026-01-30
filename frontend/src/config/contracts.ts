@@ -44,7 +44,7 @@ export const CONTRACTS: ContractConfig[] = [
     id: "vault-core",
     label: "Vault Core",
     address: "SP1K2XGT5RNGT42N49BH936VDF8NXWNZJY15BPV4F",
-    name: "vault-core-v2601221844",
+    name: "vault-core-v2601221844-v10",
     type: "vault",
     description:
       "Supply, withdraw, and route assets into registered strategies.",
@@ -375,7 +375,7 @@ export const CONTRACTS: ContractConfig[] = [
     id: "strategy-manager",
     label: "Strategy Manager",
     address: "SP1K2XGT5RNGT42N49BH936VDF8NXWNZJY15BPV4F",
-    name: "strategy-manager-v2601221844",
+    name: "strategy-manager-v2601221844-v10",
     type: "manager",
     description: "Manage strategy weights and activity.",
     actions: [
@@ -505,7 +505,7 @@ export const CONTRACTS: ContractConfig[] = [
     id: "strategy-income",
     label: "Strategy Income",
     address: "SP1K2XGT5RNGT42N49BH936VDF8NXWNZJY15BPV4F",
-    name: "strategy-income-v2601221844",
+    name: "strategy-income-v2601221844-v10",
     type: "strategy",
     description: "Income strategy controls.",
     actions: [
@@ -592,7 +592,7 @@ export const CONTRACTS: ContractConfig[] = [
     id: "strategy-lending",
     label: "Strategy Lending",
     address: "SP1K2XGT5RNGT42N49BH936VDF8NXWNZJY15BPV4F",
-    name: "strategy-lending-v2601221844",
+    name: "strategy-lending-v2601221844-v10",
     type: "strategy",
     description: "Lending strategy controls.",
     actions: [
@@ -679,7 +679,7 @@ export const CONTRACTS: ContractConfig[] = [
     id: "strategy-liquidity",
     label: "Strategy Liquidity",
     address: "SP1K2XGT5RNGT42N49BH936VDF8NXWNZJY15BPV4F",
-    name: "strategy-liquidity-v2601221844",
+    name: "strategy-liquidity-v2601221844-v10",
     type: "strategy",
     description: "Liquidity strategy controls.",
     actions: [
@@ -766,7 +766,7 @@ export const CONTRACTS: ContractConfig[] = [
     id: "fee-manager",
     label: "Fee Manager",
     address: "SP1K2XGT5RNGT42N49BH936VDF8NXWNZJY15BPV4F",
-    name: "fee-manager-v2-v2601221844",
+    name: "fee-manager-v2-v2601221844-v10",
     type: "fees",
     description: "Update fee settings and recipients.",
     actions: [
@@ -816,7 +816,7 @@ export const CONTRACTS: ContractConfig[] = [
     id: "governance",
     label: "Governance",
     address: "SP1K2XGT5RNGT42N49BH936VDF8NXWNZJY15BPV4F",
-    name: "governance-v2-v2601221844",
+    name: "governance-v2-v2601221844-v10",
     type: "governance",
     description: "Governor permissions and pause control.",
     actions: [
@@ -854,7 +854,7 @@ export const CONTRACTS: ContractConfig[] = [
     id: "vault-registry",
     label: "Vault Registry",
     address: "SP1K2XGT5RNGT42N49BH936VDF8NXWNZJY15BPV4F",
-    name: "vault-registry-v2601221844",
+    name: "vault-registry-v2601221844-v10",
     type: "registry",
     description: "Register vaults and manage caps.",
     actions: [
@@ -930,7 +930,7 @@ export const CONTRACTS: ContractConfig[] = [
     id: "oracle-nav",
     label: "Oracle NAV",
     address: "SP1K2XGT5RNGT42N49BH936VDF8NXWNZJY15BPV4F",
-    name: "oracle-nav-v2601221844",
+    name: "oracle-nav-v2601221844-v10",
     type: "oracle",
     description: "Report NAV values for vaults.",
     actions: [
@@ -960,7 +960,7 @@ export const CONTRACTS: ContractConfig[] = [
     id: "mock-token",
     label: "Mock Token",
     address: "SP1K2XGT5RNGT42N49BH936VDF8NXWNZJY15BPV4F",
-    name: "mock-token-v2-v2601221844",
+    name: "mock-token-v2-v2601221844-v10",
     type: "token",
     description: "Test SIP-010 token operations.",
     actions: [

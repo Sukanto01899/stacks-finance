@@ -64,53 +64,53 @@ plan:
     - id: 0
       transactions:
         - emulated-contract-publish:
-            contract-name: fee-manager-v2-v2601221844
+            contract-name: fee-manager-v2-v2601221844-v10
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: "contracts\\fee-manager-v2-v2601221844.clar"
+            path: "contracts\\fee-manager-v2-v2601221844-v10.clar"
             clarity-version: 3
         - emulated-contract-publish:
-            contract-name: governance-v2-v2601221844
+            contract-name: governance-v2-v2601221844-v10
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: "contracts\\governance-v2-v2601221844.clar"
+            path: "contracts\\governance-v2-v2601221844-v10.clar"
             clarity-version: 3
         - emulated-contract-publish:
-            contract-name: mock-token-v2-v2601221844
+            contract-name: mock-token-v2-v2601221844-v10
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: "contracts\\mock-token-v2-v2601221844.clar"
+            path: "contracts\\mock-token-v2-v2601221844-v10.clar"
             clarity-version: 3
         - emulated-contract-publish:
-            contract-name: oracle-nav-v2601221844
+            contract-name: oracle-nav-v2601221844-v10
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: "contracts\\oracle-nav-v2601221844.clar"
+            path: "contracts\\oracle-nav-v2601221844-v10.clar"
             clarity-version: 3
         - emulated-contract-publish:
-            contract-name: strategy-income-v2601221844
+            contract-name: strategy-income-v2601221844-v10
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: "contracts\\strategy-income-v2601221844.clar"
+            path: "contracts\\strategy-income-v2601221844-v10.clar"
             clarity-version: 3
         - emulated-contract-publish:
-            contract-name: strategy-lending-v2601221844
+            contract-name: strategy-lending-v2601221844-v10
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: "contracts\\strategy-lending-v2601221844.clar"
+            path: "contracts\\strategy-lending-v2601221844-v10.clar"
             clarity-version: 3
         - emulated-contract-publish:
-            contract-name: strategy-liquidity-v2601221844
+            contract-name: strategy-liquidity-v2601221844-v10
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: "contracts\\strategy-liquidity-v2601221844.clar"
+            path: "contracts\\strategy-liquidity-v2601221844-v10.clar"
             clarity-version: 3
         - emulated-contract-publish:
-            contract-name: strategy-manager-v2601221844
+            contract-name: strategy-manager-v2601221844-v10
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: "contracts\\strategy-manager-v2601221844.clar"
+            path: "contracts\\strategy-manager-v2601221844-v10.clar"
             clarity-version: 3
         - emulated-contract-publish:
-            contract-name: vault-core-v2601221844
+            contract-name: vault-core-v2601221844-v10
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: "contracts\\vault-core-v2601221844.clar"
+            path: "contracts\\vault-core-v2601221844-v10.clar"
             clarity-version: 3
         - emulated-contract-publish:
-            contract-name: vault-registry-v2601221844
+            contract-name: vault-registry-v2601221844-v10
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: "contracts\\vault-registry-v2601221844.clar"
+            path: "contracts\\vault-registry-v2601221844-v10.clar"
             clarity-version: 3
       epoch: "3.2"

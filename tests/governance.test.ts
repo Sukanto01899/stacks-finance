@@ -4,14 +4,14 @@ import { Cl } from "@stacks/transactions";
 const getAddress = (account: string | { address: string }) =>
   typeof account === "string" ? account : account.address;
 
-describe("governance-v2-v2601221844", () => {
+describe("governance-v2-v2601221844-v10", () => {
   it("allows governor to manage pause and governor role", () => {
     const accounts = simnet.getAccounts();
     const deployer = getAddress(accounts.get("deployer")!);
     const wallet1 = getAddress(accounts.get("wallet_1")!);
 
     const isGov = simnet.callReadOnlyFn(
-      "governance-v2-v2601221844",
+      "governance-v2-v2601221844-v10",
       "is-governor",
       [Cl.principal(deployer)],
       deployer
@@ -19,7 +19,7 @@ describe("governance-v2-v2601221844", () => {
     expect(isGov.result).toBeBool(true);
 
     const isGovOther = simnet.callReadOnlyFn(
-      "governance-v2-v2601221844",
+      "governance-v2-v2601221844-v10",
       "is-governor",
       [Cl.principal(wallet1)],
       deployer
@@ -27,18 +27,18 @@ describe("governance-v2-v2601221844", () => {
     expect(isGovOther.result).toBeBool(false);
 
     const pause = simnet.callPublicFn(
-      "governance-v2-v2601221844",
+      "governance-v2-v2601221844-v10",
       "set-paused",
       [Cl.bool(true)],
       deployer
     );
     expect(pause.result).toBeOk(Cl.bool(true));
 
-    const paused = simnet.callReadOnlyFn("governance-v2-v2601221844", "is-paused", [], deployer);
+    const paused = simnet.callReadOnlyFn("governance-v2-v2601221844-v10", "is-paused", [], deployer);
     expect(paused.result).toBeBool(true);
 
     const setGovernor = simnet.callPublicFn(
-      "governance-v2-v2601221844",
+      "governance-v2-v2601221844-v10",
       "set-governor",
       [Cl.principal(wallet1)],
       deployer
@@ -46,7 +46,7 @@ describe("governance-v2-v2601221844", () => {
     expect(setGovernor.result).toBeOk(Cl.bool(true));
 
     const isGovAfter = simnet.callReadOnlyFn(
-      "governance-v2-v2601221844",
+      "governance-v2-v2601221844-v10",
       "is-governor",
       [Cl.principal(wallet1)],
       deployer
@@ -59,7 +59,7 @@ describe("governance-v2-v2601221844", () => {
     const wallet1 = getAddress(accounts.get("wallet_1")!);
 
     const pause = simnet.callPublicFn(
-      "governance-v2-v2601221844",
+      "governance-v2-v2601221844-v10",
       "set-paused",
       [Cl.bool(true)],
       wallet1
