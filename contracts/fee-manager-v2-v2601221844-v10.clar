@@ -6,6 +6,12 @@
 (define-data-var treasury principal tx-sender)
 (define-data-var strategist principal tx-sender)
 
+(define-constant MAX_PERFORMANCE_FEE u2000)  ;; 20%
+(define-constant MAX_MANAGEMENT_FEE u500)    ;; 5%
+
+(define-constant ERR-INVALID-PERFORMANCE-FEE u102)
+(define-constant ERR-INVALID-MANAGEMENT-FEE u103)
+
 (define-read-only (is-governor)
   (is-eq tx-sender (var-get governor))
 )
@@ -32,6 +38,9 @@
 (define-public (set-fees (performance-bps uint) (management-bps uint))
   (begin
     (asserts! (is-governor) (err ERR-UNAUTHORIZED))
+    ;; Validate fee ranges
+    (asserts! (<= performance-bps MAX_PERFORMANCE_FEE) (err ERR-INVALID-PERFORMANCE-FEE))
+    (asserts! (<= management-bps MAX_MANAGEMENT_FEE) (err ERR-INVALID-MANAGEMENT-FEE))
     (var-set performance-fee-bps performance-bps)
     (var-set management-fee-bps management-bps)
     (ok true)
