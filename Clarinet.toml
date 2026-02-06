@@ -9,44 +9,44 @@ cache_dir = "./.cache"
 # path = "contracts/counter.clar"
 # epoch = "latest"
 
-[contracts.governance-v2-v2601221844-v10]
-path = "contracts/governance-v2-v2601221844-v10.clar"
+[contracts.governance-v2-v2601221844-v11]
+path = "contracts/governance-v2-v2601221844-v11.clar"
 epoch = "3.2"
 
-[contracts.vault-registry-v2601221844-v10]
-path = "contracts/vault-registry-v2601221844-v10.clar"
+[contracts.vault-registry-v2601221844-v11]
+path = "contracts/vault-registry-v2601221844-v11.clar"
 epoch = "3.2"
 
-[contracts.vault-core-v2601221844-v10]
-path = "contracts/vault-core-v2601221844-v10.clar"
+[contracts.vault-core-v2601221844-v11]
+path = "contracts/vault-core-v2601221844-v11.clar"
 epoch = "3.2"
 
-[contracts.strategy-manager-v2601221844-v10]
-path = "contracts/strategy-manager-v2601221844-v10.clar"
+[contracts.strategy-manager-v2601221844-v11]
+path = "contracts/strategy-manager-v2601221844-v11.clar"
 epoch = "3.2"
 
-[contracts.strategy-lending-v2601221844-v10]
-path = "contracts/strategy-lending-v2601221844-v10.clar"
+[contracts.strategy-lending-v2601221844-v11]
+path = "contracts/strategy-lending-v2601221844-v11.clar"
 epoch = "3.2"
 
-[contracts.strategy-liquidity-v2601221844-v10]
-path = "contracts/strategy-liquidity-v2601221844-v10.clar"
+[contracts.strategy-liquidity-v2601221844-v11]
+path = "contracts/strategy-liquidity-v2601221844-v11.clar"
 epoch = "3.2"
 
-[contracts.strategy-income-v2601221844-v10]
-path = "contracts/strategy-income-v2601221844-v10.clar"
+[contracts.strategy-income-v2601221844-v11]
+path = "contracts/strategy-income-v2601221844-v11.clar"
 epoch = "3.2"
 
-[contracts.fee-manager-v2-v2601221844-v10]
-path = "contracts/fee-manager-v2-v2601221844-v10.clar"
+[contracts.fee-manager-v2-v2601221844-v11]
+path = "contracts/fee-manager-v2-v2601221844-v11.clar"
 epoch = "3.2"
 
-[contracts.oracle-nav-v2601221844-v10]
-path = "contracts/oracle-nav-v2601221844-v10.clar"
+[contracts.oracle-nav-v2601221844-v11]
+path = "contracts/oracle-nav-v2601221844-v11.clar"
 epoch = "3.2"
 
-[contracts.mock-token-v2-v2601221844-v10]
-path = "contracts/mock-token-v2-v2601221844-v10.clar"
+[contracts.mock-token-v2-v2601221844-v11]
+path = "contracts/mock-token-v2-v2601221844-v11.clar"
 epoch = "3.2"
 
 [repl.analysis]
