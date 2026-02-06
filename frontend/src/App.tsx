@@ -35,14 +35,17 @@ function App() {
     return stxAddress?.testnet ?? userData?.profile?.stxAddresses?.testnet;
   }, []);
 
-  const getBns = useCallback(async (stxAddress: string) => {
-    const bnsNetwork = isMainnet ? "mainnet" : "testnet";
-    const response = await fetch(
-      `https://api.bnsv2.com/${bnsNetwork}/names/address/${stxAddress}/valid`,
-    );
-    const data = await response.json();
-    return data?.names?.[0]?.full_name ?? "";
-  }, [isMainnet]);
+  const getBns = useCallback(
+    async (stxAddress: string) => {
+      const bnsNetwork = isMainnet ? "mainnet" : "testnet";
+      const response = await fetch(
+        `https://api.bnsv2.com/${bnsNetwork}/names/address/${stxAddress}/valid`,
+      );
+      const data = await response.json();
+      return data?.names?.[0]?.full_name ?? "";
+    },
+    [isMainnet],
+  );
 
   useEffect(() => {
     if (userSession.isUserSignedIn()) {
@@ -79,7 +82,7 @@ function App() {
           setIsConnecting(false);
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       setIsConnecting(false);
     }
   }, [appDetails, getBns, isConnecting, resolveAddress]);
@@ -116,29 +119,23 @@ function App() {
         </div>
         <nav className="app-nav">
           <NavLink
-            className={({ isActive }) =>
-              `nav-link${isActive ? " active" : ""}`
-            }
+            className={({ isActive }) => `nav-link${isActive ? " active" : ""}`}
             to="/"
             end
           >
             Overview
           </NavLink>
           <NavLink
-            className={({ isActive }) =>
-              `nav-link${isActive ? " active" : ""}`
-            }
+            className={({ isActive }) => `nav-link${isActive ? " active" : ""}`}
             to="/contracts"
           >
             Contracts
           </NavLink>
           <NavLink
-            className={({ isActive }) =>
-              `nav-link${isActive ? " active" : ""}`
-            }
+            className={({ isActive }) => `nav-link${isActive ? " active" : ""}`}
             to="/activity"
           >
-            Activity
+            Activities
           </NavLink>
         </nav>
         <div className="header-actions">
@@ -155,7 +152,11 @@ function App() {
               </button>
             </div>
           ) : (
-            <button className="cta-button" type="button" onClick={handleConnect}>
+            <button
+              className="cta-button"
+              type="button"
+              onClick={handleConnect}
+            >
               {isConnecting ? "Connecting..." : "Connect wallet"}
             </button>
           )}
@@ -166,7 +167,10 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/contracts" element={<ContractsPage />} />
-          <Route path="/contracts/:contractId" element={<ContractDetailPage />} />
+          <Route
+            path="/contracts/:contractId"
+            element={<ContractDetailPage />}
+          />
           <Route
             path="/activity"
             element={
