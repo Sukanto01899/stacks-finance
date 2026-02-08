@@ -18,6 +18,17 @@ function ContractsPage() {
         </button>
       </header>
 
+      <div className="contract-metrics">
+  <div className="metric">
+    <span className="metric-value">{contract.totalCalls || 0}</span>
+    <span className="metric-label">Calls</span>
+  </div>
+  <div className="metric">
+    <span className="metric-value">{contract.lastCall || "Never"}</span>
+    <span className="metric-label">Last used</span>
+  </div>
+</div>
+
       <div className="contract-grid">
         {CONTRACTS.map((contract, index) => (
           <Link
@@ -30,7 +41,18 @@ function ContractsPage() {
               <p className="badge">{contract.type}</p>
               <h3>{contract.label}</h3>
               <p>{contract.description}</p>
+              <div className="contract-metrics">
+                <div className="metric">
+                  <span className="metric-value">{contract.totalCalls || 0}</span>
+                  <span className="metric-label">Calls</span>
+                </div>
+                <div className="metric">
+                  <span className="metric-value">{contract.lastCall || "Never"}</span>
+                  <span className="metric-label">Last used</span>
+                </div>
+              </div>
             </div>
+           
             <span className="tile-link">Open →</span>
           </Link>
         ))}
