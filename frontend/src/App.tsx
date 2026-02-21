@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { showConnect } from "@stacks/connect";
 import { NavLink, Route, Routes } from "react-router-dom";
 import "./App.css";
@@ -9,10 +9,32 @@ import NotFoundPage from "./pages/NotFound";
 import { networkLabel, STACKS_NETWORK } from "./lib/stacks";
 import { userSession } from "./wallet/stacksSession";
 
+const resolveAddressFromUserData = (userData: any) => {
+  const stxAddress = userData?.profile?.stxAddress;
+  if (typeof stxAddress === "string") {
+    return stxAddress;
+  }
+  if (STACKS_NETWORK === "mainnet") {
+    return stxAddress?.mainnet ?? userData?.profile?.stxAddresses?.mainnet;
+  }
+  return stxAddress?.testnet ?? userData?.profile?.stxAddresses?.testnet;
+};
+
 function App() {
   const [isConnecting, setIsConnecting] = useState(false);
-  const [isConnected, setIsConnected] = useState(false);
-  const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  const initialWalletAddress = useMemo(() => {
+    if (!userSession.isUserSignedIn()) {
+      return null;
+    }
+    const userData = userSession.loadUserData();
+    return resolveAddressFromUserData(userData) ?? null;
+  }, []);
+  const [isConnected, setIsConnected] = useState(
+    () => initialWalletAddress !== null,
+  );
+  const [walletAddress, setWalletAddress] = useState<string | null>(
+    initialWalletAddress,
+  );
   const [bns, setBns] = useState("");
   const isMainnet = STACKS_NETWORK === "mainnet";
 
@@ -23,17 +45,6 @@ function App() {
     }),
     [],
   );
-
-  const resolveAddress = useCallback((userData: any) => {
-    const stxAddress = userData?.profile?.stxAddress;
-    if (typeof stxAddress === "string") {
-      return stxAddress;
-    }
-    if (STACKS_NETWORK === "mainnet") {
-      return stxAddress?.mainnet ?? userData?.profile?.stxAddresses?.mainnet;
-    }
-    return stxAddress?.testnet ?? userData?.profile?.stxAddresses?.testnet;
-  }, []);
 
   const getBns = useCallback(
     async (stxAddress: string) => {
@@ -47,17 +58,6 @@ function App() {
     [isMainnet],
   );
 
-  useEffect(() => {
-    if (userSession.isUserSignedIn()) {
-      const userData = userSession.loadUserData();
-      const address = resolveAddress(userData);
-      if (address) {
-        setWalletAddress(address);
-        setIsConnected(true);
-      }
-    }
-  }, [resolveAddress]);
-
   const handleConnect = useCallback(async () => {
     if (isConnecting) {
       return;
@@ -69,7 +69,7 @@ function App() {
         userSession,
         onFinish: async () => {
           const userData = userSession.loadUserData();
-          const address = resolveAddress(userData);
+          const address = resolveAddressFromUserData(userData);
           if (address) {
             const bnsName = await getBns(address);
             setWalletAddress(address);
@@ -85,7 +85,7 @@ function App() {
     } catch (error: any) {
       setIsConnecting(false);
     }
-  }, [appDetails, getBns, isConnecting, resolveAddress]);
+  }, [appDetails, getBns, isConnecting]);
 
   const handleDisconnect = useCallback(() => {
     userSession.signUserOut();
