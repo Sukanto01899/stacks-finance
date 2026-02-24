@@ -9,44 +9,44 @@ cache_dir = "./.cache"
 # path = "contracts/counter.clar"
 # epoch = "latest"
 
-[contracts.governance-v12]
-path = "contracts/governance-v12.clar"
+[contracts.governance-v13]
+path = "contracts/governance-v13.clar"
 epoch = "3.2"
 
-[contracts.vault-registry-v12]
-path = "contracts/vault-registry-v12.clar"
+[contracts.vault-registry-v13]
+path = "contracts/vault-registry-v13.clar"
 epoch = "3.2"
 
-[contracts.vault-core-v12]
-path = "contracts/vault-core-v12.clar"
+[contracts.vault-core-v13]
+path = "contracts/vault-core-v13.clar"
 epoch = "3.2"
 
-[contracts.strategy-manager-v12]
-path = "contracts/strategy-manager-v12.clar"
+[contracts.strategy-manager-v13]
+path = "contracts/strategy-manager-v13.clar"
 epoch = "3.2"
 
-[contracts.strategy-lending-v12]
-path = "contracts/strategy-lending-v12.clar"
+[contracts.strategy-lending-v13]
+path = "contracts/strategy-lending-v13.clar"
 epoch = "3.2"
 
-[contracts.strategy-liquidity-v12]
-path = "contracts/strategy-liquidity-v12.clar"
+[contracts.strategy-liquidity-v13]
+path = "contracts/strategy-liquidity-v13.clar"
 epoch = "3.2"
 
-[contracts.strategy-income-v12]
-path = "contracts/strategy-income-v12.clar"
+[contracts.strategy-income-v13]
+path = "contracts/strategy-income-v13.clar"
 epoch = "3.2"
 
-[contracts.fee-manager-v12]
-path = "contracts/fee-manager-v12.clar"
+[contracts.fee-manager-v13]
+path = "contracts/fee-manager-v13.clar"
 epoch = "3.2"
 
-[contracts.oracle-nav-v12]
-path = "contracts/oracle-nav-v12.clar"
+[contracts.oracle-nav-v13]
+path = "contracts/oracle-nav-v13.clar"
 epoch = "3.2"
 
-[contracts.mock-token-v12]
-path = "contracts/mock-token-v12.clar"
+[contracts.mock-token-v13]
+path = "contracts/mock-token-v13.clar"
 epoch = "3.2"
 
 [repl.analysis]
