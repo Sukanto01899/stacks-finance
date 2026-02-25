@@ -1,3 +1,6 @@
+;; Governance contract for Stacks Finance
+;; This contract manages the governor and paused state for the protocol.
+
 (define-constant ERR-UNAUTHORIZED u100)
 
 (define-data-var governor principal tx-sender)

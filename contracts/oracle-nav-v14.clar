@@ -1,10 +1,16 @@
+;; Oracle NAV contract for Stacks Finance
+;; This contract allows the governor to set the NAV for each vault, which can be read by
+
 (define-constant ERR-UNAUTHORIZED u100)
 
 (define-data-var governor principal tx-sender)
 
 (define-map navs
   { vault: principal }
-  { nav: uint, updated-at: uint }
+  {
+    nav: uint,
+    updated-at: uint,
+  }
 )
 
 (define-read-only (is-governor)
@@ -23,10 +29,16 @@
   (map-get? navs { vault: vault })
 )
 
-(define-public (set-nav (vault principal) (nav uint))
+(define-public (set-nav
+    (vault principal)
+    (nav uint)
+  )
   (begin
     (asserts! (is-governor) (err ERR-UNAUTHORIZED))
-    (map-set navs { vault: vault } { nav: nav, updated-at: u0 })
+    (map-set navs { vault: vault } {
+      nav: nav,
+      updated-at: u0,
+    })
     (ok true)
   )
 )

@@ -1,3 +1,6 @@
+;; Fee Manager contract for Stacks Finance
+;; This contract manages the performance and management fees, as well as the treasury and strategist recipients.
+
 (define-constant ERR-UNAUTHORIZED u100)
 
 (define-data-var governor principal tx-sender)
@@ -19,17 +22,22 @@
 )
 
 (define-read-only (get-fees)
-  { performance-fee-bps: (var-get performance-fee-bps),
+  {
+    performance-fee-bps: (var-get performance-fee-bps),
     management-fee-bps: (var-get management-fee-bps),
     treasury: (var-get treasury),
-    strategist: (var-get strategist) }
+    strategist: (var-get strategist),
+  }
 )
 
 (define-read-only (calculate-performance-fee (profit uint))
   (/ (* profit (var-get performance-fee-bps)) u10000)
 )
 
-(define-public (set-fees (performance-bps uint) (management-bps uint))
+(define-public (set-fees
+    (performance-bps uint)
+    (management-bps uint)
+  )
   (begin
     (asserts! (is-governor) (err ERR-UNAUTHORIZED))
     (var-set performance-fee-bps performance-bps)
@@ -38,7 +46,10 @@
   )
 )
 
-(define-public (set-recipients (new-treasury principal) (new-strategist principal))
+(define-public (set-recipients
+    (new-treasury principal)
+    (new-strategist principal)
+  )
   (begin
     (asserts! (is-governor) (err ERR-UNAUTHORIZED))
     (var-set treasury new-treasury)
